@@ -1,0 +1,52 @@
+import { MdMailOutline } from "react-icons/md";
+import { CiPhone } from "react-icons/ci";
+import { FiShoppingBag } from "react-icons/fi";
+import { BsPersonCircle } from "react-icons/bs";
+import { RiFacebookCircleLine } from "react-icons/ri";
+import { FaInstagram } from "react-icons/fa6";
+import { Link } from "react-router";
+
+function NavBar() {
+    return (
+        <>
+            <div className="w-full border-b border-base-300">
+                <div className="container p-5 mx-auto grid grid-cols-3">
+                    <div className="flex gap-3 items-center">
+                        <div className="p-1 rounded-full border border-base-content">
+                            <MdMailOutline className='size-4' />
+                        </div>
+                        <div className="font-semibold">Contact Us</div>
+                    </div>
+                    <div className="flex gap-3 items-center justify-center">
+                        <div className="p-1 rounded-full border border-base-content">
+                            <CiPhone className='size-4' />
+                        </div>
+                        <div className="font-semibold">+41 (0) 848 000 849</div>
+                    </div>
+                    <div className="flex gap-5 justify-end">
+                        <FiShoppingBag className="size-6" />
+                        <BsPersonCircle className="size-6" />
+                        <RiFacebookCircleLine className="size-6" />
+                        <FaInstagram className="size-6" />
+                    </div>
+                </div>
+            </div>
+            <div className="w-full border-b border-base-300">
+                <div className="container p-5 mx-auto flex justify-between items-center">
+                    <img className="h-10" src="https://www.patricklocation.ch/img/structure/logo.svg" alt="" />
+                    <div className="flex gap-5">
+                        <Link to="/" className="btn btn-ghost">Home</Link>
+                        <Link to="/bookings" className="btn btn-ghost">Rentals</Link>
+                        <button className="btn btn-ghost">Vehicle Types</button>
+                        <button className="btn btn-ghost">Garage</button>
+                        <button className="btn btn-ghost">Blog</button>
+                        <button className="btn btn-ghost">Contact</button>
+                        <button className="btn btn-primary">Book</button>
+                    </div>
+                </div>
+            </div>
+        </>
+    )
+}
+
+export default NavBar
