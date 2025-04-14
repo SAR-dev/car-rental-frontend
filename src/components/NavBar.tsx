@@ -10,7 +10,7 @@ function NavBar() {
     return (
         <>
             <div className="w-full border-b border-base-300">
-                <div className="container p-5 mx-auto grid grid-cols-3">
+                <div className="container py-5 px-10 mx-auto grid grid-cols-3">
                     <div className="flex gap-3 items-center">
                         <div className="p-1 rounded-full border border-base-content">
                             <MdMailOutline className='size-4' />
@@ -32,7 +32,7 @@ function NavBar() {
                 </div>
             </div>
             <div className="w-full border-b border-base-300">
-                <div className="container p-5 mx-auto flex justify-between items-center">
+                <div className="container py-5 px-10 mx-auto flex justify-between items-center">
                     <img className="h-10" src="https://www.patricklocation.ch/img/structure/logo.svg" alt="" />
                     <div className="flex gap-5">
                         <Link to="/" className="btn btn-ghost">Home</Link>

@@ -6,7 +6,7 @@ function Footer() {
     return (
         <>
             <div className="py-16 bg-indigo-800">
-                <div className="container px-5 mx-auto">
+                <div className="container px-10 mx-auto">
                     <div className="flex w-full justify-center">
                         <img className="h-20" src="https://www.patricklocation.ch/img/structure/logo-white.svg" alt="" />
                     </div>
