@@ -151,7 +151,7 @@ export type VehiclePackagesRecord = {
 	basePrice?: number
 	created?: IsoDateString
 	id: string
-	maxKmLimit?: number
+	minKmLimit?: number
 	pricePerExtraKm?: number
 	title?: string
 	updated?: IsoDateString
@@ -165,25 +165,41 @@ export type VehicleTypesRecord = {
 	updated?: IsoDateString
 }
 
-export enum VehiclesTypeOptions {
+export enum VehiclesTransmissionTypeOptions {
 	"MANUAL" = "MANUAL",
 	"AUTOMATIC" = "AUTOMATIC",
 }
+
+export enum VehiclesFuelTypeOptions {
+	"PETROL" = "PETROL",
+	"DIESEL" = "DIESEL",
+	"ELECTRIC" = "ELECTRIC",
+	"HYBRID" = "HYBRID",
+	"CNG" = "CNG",
+	"LPG" = "LPG",
+	"HYDROGEN" = "HYDROGEN",
+	"ETHANOL" = "ETHANOL",
+	"BIODIESEL" = "BIODIESEL",
+	"METHANOL" = "METHANOL",
+	"PROPANE" = "PROPANE",
+}
 export type VehiclesRecord = {
+	agencies?: RecordIdString[]
 	created?: IsoDateString
 	externalHeight?: string
 	featuresExcluded?: RecordIdString[]
 	featuresIncluded?: RecordIdString[]
-	fuel?: string
+	fuelType?: VehiclesFuelTypeOptions
 	id: string
 	images?: string[]
 	licenceType?: string
 	loadDimensions?: string
+	model?: string
 	noOfDoors?: number
 	noOfSeats?: number
 	payloadWeight?: string
 	title?: string
-	type?: VehiclesTypeOptions
+	transmissionType?: VehiclesTransmissionTypeOptions
 	updated?: IsoDateString
 	vehicleOptions?: RecordIdString[]
 	vehicleTypes?: RecordIdString[]
