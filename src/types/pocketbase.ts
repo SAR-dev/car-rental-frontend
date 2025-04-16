@@ -13,10 +13,10 @@ export enum Collections {
 	Superusers = "_superusers",
 	Agencies = "agencies",
 	Features = "features",
-	KilometerPackages = "kilometerPackages",
 	Reservations = "reservations",
 	Users = "users",
 	VehicleOptions = "vehicleOptions",
+	VehiclePackages = "vehiclePackages",
 	VehicleTypes = "vehicleTypes",
 	Vehicles = "vehicles",
 }
@@ -107,16 +107,6 @@ export type FeaturesRecord = {
 	updated?: IsoDateString
 }
 
-export type KilometerPackagesRecord = {
-	basePrice?: number
-	created?: IsoDateString
-	id: string
-	pricePerKm?: number
-	subtitle?: string
-	title?: string
-	updated?: IsoDateString
-}
-
 export enum ReservationsStatusOptions {
 	"ONGOING" = "ONGOING",
 	"CONFIRMED" = "CONFIRMED",
@@ -126,7 +116,6 @@ export type ReservationsRecord = {
 	created?: IsoDateString
 	endAt?: IsoDateString
 	id: string
-	isPaid?: boolean
 	price?: number
 	startAt?: IsoDateString
 	status?: ReservationsStatusOptions
@@ -156,6 +145,17 @@ export type VehicleOptionsRecord = {
 	id: string
 	title?: string
 	updated?: IsoDateString
+}
+
+export type VehiclePackagesRecord = {
+	basePrice?: number
+	created?: IsoDateString
+	id: string
+	maxKmLimit?: number
+	pricePerExtraKm?: number
+	title?: string
+	updated?: IsoDateString
+	vehicle: RecordIdString
 }
 
 export type VehicleTypesRecord = {
@@ -197,10 +197,10 @@ export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemF
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
 export type AgenciesResponse<Texpand = unknown> = Required<AgenciesRecord> & BaseSystemFields<Texpand>
 export type FeaturesResponse<Texpand = unknown> = Required<FeaturesRecord> & BaseSystemFields<Texpand>
-export type KilometerPackagesResponse<Texpand = unknown> = Required<KilometerPackagesRecord> & BaseSystemFields<Texpand>
 export type ReservationsResponse<Texpand = unknown> = Required<ReservationsRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 export type VehicleOptionsResponse<Texpand = unknown> = Required<VehicleOptionsRecord> & BaseSystemFields<Texpand>
+export type VehiclePackagesResponse<Texpand = unknown> = Required<VehiclePackagesRecord> & BaseSystemFields<Texpand>
 export type VehicleTypesResponse<Texpand = unknown> = Required<VehicleTypesRecord> & BaseSystemFields<Texpand>
 export type VehiclesResponse<Texpand = unknown> = Required<VehiclesRecord> & BaseSystemFields<Texpand>
 
@@ -214,10 +214,10 @@ export type CollectionRecords = {
 	_superusers: SuperusersRecord
 	agencies: AgenciesRecord
 	features: FeaturesRecord
-	kilometerPackages: KilometerPackagesRecord
 	reservations: ReservationsRecord
 	users: UsersRecord
 	vehicleOptions: VehicleOptionsRecord
+	vehiclePackages: VehiclePackagesRecord
 	vehicleTypes: VehicleTypesRecord
 	vehicles: VehiclesRecord
 }
@@ -230,10 +230,10 @@ export type CollectionResponses = {
 	_superusers: SuperusersResponse
 	agencies: AgenciesResponse
 	features: FeaturesResponse
-	kilometerPackages: KilometerPackagesResponse
 	reservations: ReservationsResponse
 	users: UsersResponse
 	vehicleOptions: VehicleOptionsResponse
+	vehiclePackages: VehiclePackagesResponse
 	vehicleTypes: VehicleTypesResponse
 	vehicles: VehiclesResponse
 }
@@ -249,10 +249,10 @@ export type TypedPocketBase = PocketBase & {
 	collection(idOrName: '_superusers'): RecordService<SuperusersResponse>
 	collection(idOrName: 'agencies'): RecordService<AgenciesResponse>
 	collection(idOrName: 'features'): RecordService<FeaturesResponse>
-	collection(idOrName: 'kilometerPackages'): RecordService<KilometerPackagesResponse>
 	collection(idOrName: 'reservations'): RecordService<ReservationsResponse>
 	collection(idOrName: 'users'): RecordService<UsersResponse>
 	collection(idOrName: 'vehicleOptions'): RecordService<VehicleOptionsResponse>
+	collection(idOrName: 'vehiclePackages'): RecordService<VehiclePackagesResponse>
 	collection(idOrName: 'vehicleTypes'): RecordService<VehicleTypesResponse>
 	collection(idOrName: 'vehicles'): RecordService<VehiclesResponse>
 }

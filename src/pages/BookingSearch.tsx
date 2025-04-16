@@ -9,7 +9,7 @@ import { constants } from '../constants';
 import { pb } from '../contexts/PocketContext';
 
 function BookingSearch() {
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const [formData, setFormData] = useState({
         vehicleTypeId: "",
@@ -35,6 +35,7 @@ function BookingSearch() {
         setFormData({
             ...formData,
             vehicleTypeId: searchParams.get("vehicleTypeId") || "",
+            vehicleOptionId: searchParams.get("vehicleOptionId") || "",
             agencyId: searchParams.get("agencyId") || "",
             startDate: searchParams.get("startDate") || "",
             startTime: searchParams.get("startTime") || "",
@@ -42,6 +43,33 @@ function BookingSearch() {
             endTime: searchParams.get("endTime") || "",
         });
     }, [searchParams]);
+
+    const handleVehicleTypeChange = (id: string, checked: boolean) => {
+        if (checked) {
+            searchParams.set("vehicleTypeId", id)
+        } else {
+            searchParams.set("vehicleTypeId", "")
+        }
+        setSearchParams(searchParams)
+    }
+
+    const handleAgencyChange = (id: string, checked: boolean) => {
+        if (checked) {
+            searchParams.set("agencyId", id)
+        } else {
+            searchParams.set("agencyId", "")
+        }
+        setSearchParams(searchParams)
+    }
+
+    const handleVehicleOptionChange = (id: string, checked: boolean) => {
+        if (checked) {
+            searchParams.set("vehicleOptionId", id)
+        } else {
+            searchParams.set("vehicleOptionId", "")
+        }
+        setSearchParams(searchParams)
+    }
 
     return (
         <NavLayout>
@@ -51,24 +79,30 @@ function BookingSearch() {
                     <div className='bg-base-200 rounded flex flex-col sticky top-0 h-fit border border-base-300 shadow'>
                         <CollapseForm title='Vehicle Types'>
                             <div className="flex flex-col gap-1">
-                                {vehicleTypes.map(e => (
-                                    <label className="fieldset-label">
-                                        <input 
-                                            type="checkbox" 
-                                            className="checkbox bg-base-100" 
-                                            checked={formData.vehicleTypeId == e.id} 
+                                {vehicleTypes.map(el => (
+                                    <label className="fieldset-label" key={el.id}>
+                                        <input
+                                            type="checkbox"
+                                            className="checkbox bg-base-100"
+                                            checked={formData.vehicleTypeId == el.id}
+                                            onChange={e => handleVehicleTypeChange(el.id, e.target.checked)}
                                         />
-                                        {e.title}
+                                        {el.title}
                                     </label>
                                 ))}
                             </div>
                         </CollapseForm>
                         <CollapseForm title='Agency (departure and return)'>
                             <div className="flex flex-col gap-1">
-                                {agencies.map(e => (
-                                    <label className="fieldset-label">
-                                        <input type="checkbox" className="checkbox bg-base-100" checked={formData.agencyId == e.id} />
-                                        {e.name}
+                                {agencies.map(el => (
+                                    <label className="fieldset-label" key={el.id}>
+                                        <input
+                                            type="checkbox"
+                                            className="checkbox bg-base-100"
+                                            checked={formData.agencyId == el.id}
+                                            onChange={e => handleAgencyChange(el.id, e.target.checked)}
+                                        />
+                                        {el.name}
                                     </label>
                                 ))}
                             </div>
@@ -78,19 +112,20 @@ function BookingSearch() {
                                 <input
                                     type="date"
                                     value={formData.startDate}
-                                    onChange={e =>
-                                        !isNaN(Date.parse(e.target.value)) &&
-                                        setFormData({ ...formData, startDate: e.target.value })
-                                    }
+                                    onChange={e => {
+                                        if (isNaN(Date.parse(e.target.value))) return;
+                                        searchParams.set("startDate", e.target.value)
+                                        setSearchParams(searchParams)
+                                    }}
                                     className="input"
                                 />
                                 <input
                                     type="time"
                                     value={formData.startTime}
-                                    onChange={e =>
-                                        constants.TIME_FORMAT.test(e.target.value) &&
-                                        setFormData({ ...formData, startTime: e.target.value })
-                                    }
+                                    onChange={e => {
+                                        if (!constants.TIME_FORMAT.test(e.target.value)) return;
+                                        searchParams.set("startTime", e.target.value)
+                                    }}
                                     className="input"
                                 />
                             </div>
@@ -100,29 +135,35 @@ function BookingSearch() {
                                 <input
                                     type="date"
                                     value={formData.endDate}
-                                    onChange={e =>
-                                        !isNaN(Date.parse(e.target.value)) &&
-                                        setFormData({ ...formData, endDate: e.target.value })
-                                    }
+                                    onChange={e => {
+                                        if (isNaN(Date.parse(e.target.value))) return;
+                                        searchParams.set("endDate", e.target.value)
+                                        setSearchParams(searchParams)
+                                    }}
                                     className="input"
                                 />
                                 <input
                                     type="time"
                                     value={formData.endTime}
-                                    onChange={e =>
-                                        constants.TIME_FORMAT.test(e.target.value) &&
-                                        setFormData({ ...formData, endTime: e.target.value })
-                                    }
+                                    onChange={e => {
+                                        if (!constants.TIME_FORMAT.test(e.target.value)) return;
+                                        searchParams.set("endTime", e.target.value)
+                                    }}
                                     className="input"
                                 />
                             </div>
                         </CollapseForm>
                         <CollapseForm title='Options'>
                             <div className="flex flex-col gap-1">
-                                {vehicleOptions.map(e => (
-                                    <label className="fieldset-label">
-                                        <input type="checkbox" className="checkbox bg-base-100" checked={formData.vehicleOptionId == e.id} />
-                                        {e.title}
+                                {vehicleOptions.map(el => (
+                                    <label className="fieldset-label" key={el.id}>
+                                        <input
+                                            type="checkbox"
+                                            className="checkbox bg-base-100"
+                                            checked={formData.vehicleOptionId == el.id}
+                                            onChange={e => handleVehicleOptionChange(el.id, e.target.checked)}
+                                        />
+                                        {el.title}
                                     </label>
                                 ))}
                             </div>
