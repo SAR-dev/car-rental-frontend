@@ -7,5 +7,5 @@ export interface VehicleList {
     noOfDoors: number
     noOfSeats: number
     title: string
-    type: string
+    transmissionType: string
 }

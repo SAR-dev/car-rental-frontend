@@ -7,6 +7,8 @@ import useLocalStorage from 'use-local-storage';
 import { AgenciesRecord, Collections, VehicleOptionsRecord, VehicleTypesRecord } from '../types/pocketbase';
 import { constants } from '../constants';
 import { pb } from '../contexts/PocketContext';
+import { VehicleList } from '../types/result';
+import { api } from '../helpers';
 
 function BookingSearch() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -21,6 +23,8 @@ function BookingSearch() {
         endTime: "",
     });
 
+    const [vehicles, setVehicles] = useState<VehicleList[]>([])
+
     const [vehicleTypes, setVehicleTypes] = useLocalStorage<VehicleTypesRecord[]>(constants.VEHICLE_TYPES_STORE_KEY, [])
     const [agencies, setAgencies] = useLocalStorage<AgenciesRecord[]>(constants.AGENCIES_STORE_KEY, [])
     const [vehicleOptions, setVehicleOptions] = useLocalStorage<VehicleOptionsRecord[]>(constants.VEHICLE_OPTIONS_STORE_KEY, [])
@@ -30,6 +34,11 @@ function BookingSearch() {
         pb.collection(Collections.Agencies).getFullList().then(res => setAgencies(res))
         pb.collection(Collections.VehicleOptions).getFullList().then(res => setVehicleOptions(res))
     }, [])
+
+    useEffect(() => {
+        api.get("/api/vehicles").then(res => setVehicles(res.data.vehicleList as unknown as VehicleList[]))
+    }, [formData])
+
 
     useEffect(() => {
         setFormData({
@@ -78,12 +87,12 @@ function BookingSearch() {
                 <div className="grid grid-cols-4 gap-10">
                     <div className='bg-base-200 rounded flex flex-col sticky top-0 h-fit border border-base-300 shadow'>
                         <CollapseForm title='Vehicle Types'>
-                            <div className="flex flex-col gap-1">
+                            <div className="flex flex-col gap-2">
                                 {vehicleTypes.map(el => (
                                     <label className="fieldset-label" key={el.id}>
                                         <input
                                             type="checkbox"
-                                            className="checkbox bg-base-100"
+                                            className="checkbox bg-white"
                                             checked={formData.vehicleTypeId == el.id}
                                             onChange={e => handleVehicleTypeChange(el.id, e.target.checked)}
                                         />
@@ -93,12 +102,12 @@ function BookingSearch() {
                             </div>
                         </CollapseForm>
                         <CollapseForm title='Agency (departure and return)'>
-                            <div className="flex flex-col gap-1">
+                            <div className="flex flex-col gap-2">
                                 {agencies.map(el => (
                                     <label className="fieldset-label" key={el.id}>
                                         <input
                                             type="checkbox"
-                                            className="checkbox bg-base-100"
+                                            className="checkbox bg-white"
                                             checked={formData.agencyId == el.id}
                                             onChange={e => handleAgencyChange(el.id, e.target.checked)}
                                         />
@@ -107,7 +116,7 @@ function BookingSearch() {
                                 ))}
                             </div>
                         </CollapseForm>
-                        <CollapseForm title='Departure'>
+                        <CollapseForm title='Departure' defaultOpen>
                             <div className="flex flex-col gap-5">
                                 <input
                                     type="date"
@@ -130,7 +139,7 @@ function BookingSearch() {
                                 />
                             </div>
                         </CollapseForm>
-                        <CollapseForm title='Return'>
+                        <CollapseForm title='Return' defaultOpen>
                             <div className="flex flex-col gap-5">
                                 <input
                                     type="date"
@@ -154,18 +163,44 @@ function BookingSearch() {
                             </div>
                         </CollapseForm>
                         <CollapseForm title='Options'>
-                            <div className="flex flex-col gap-1">
+                            <div className="flex flex-col gap-2">
                                 {vehicleOptions.map(el => (
                                     <label className="fieldset-label" key={el.id}>
                                         <input
                                             type="checkbox"
-                                            className="checkbox bg-base-100"
+                                            className="checkbox bg-white"
                                             checked={formData.vehicleOptionId == el.id}
                                             onChange={e => handleVehicleOptionChange(el.id, e.target.checked)}
                                         />
                                         {el.title}
                                     </label>
                                 ))}
+                                <select className='select mt-5' value="">
+                                    <option value="" disabled={true}>Transmission Type</option>
+                                    <option value="AUTOMATIC">Automatic</option>
+                                    <option value="MANUAL">Manual</option>
+                                </select>
+                                <select className='select' value="">
+                                    <option value="" disabled={true}>Fuel Type</option>
+                                    <option value="Diesel">Diesel</option>
+                                    <option value="Gas">Gas</option>
+                                </select>
+                                <select className='select' value="">
+                                    <option value="" disabled={true}>No of Doors</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                                <select className='select' value="">
+                                    <option value="" disabled={true}>No of Persons</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
                             </div>
                         </CollapseForm>
                         <div className="p-5 w-full">
@@ -176,7 +211,7 @@ function BookingSearch() {
                     </div>
                     <div className="col-span-3">
                         <div className="grid grid-cols-3 gap-10 w-full">
-                            {[...Array(18)].map((_, i) => <VehicleCard key={i} />)}
+                            {vehicles.map((data, i) => <VehicleCard data={data} key={i} />)}
                         </div>
                     </div>
                 </div>
