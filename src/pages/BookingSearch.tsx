@@ -21,6 +21,10 @@ function BookingSearch() {
         startTime: "",
         endDate: "",
         endTime: "",
+        transmissionType: "",
+        fuelType: "",
+        noOfDoors: "",
+        noOfSeats: ""
     });
 
     const [vehicles, setVehicles] = useState<VehicleList[]>([])
@@ -36,46 +40,56 @@ function BookingSearch() {
     }, [])
 
     useEffect(() => {
-        api.get("/api/vehicles").then(res => setVehicles(res.data.vehicleList as unknown as VehicleList[]))
+        api
+            .get("/api/vehicles", {
+                params: {
+                    ...formData
+                }
+            })
+            .then(res => setVehicles(res.data.vehicleList as unknown as VehicleList[]))
     }, [formData])
 
 
     useEffect(() => {
         setFormData({
             ...formData,
-            vehicleTypeId: searchParams.get("vehicleTypeId") || "",
-            vehicleOptionId: searchParams.get("vehicleOptionId") || "",
-            agencyId: searchParams.get("agencyId") || "",
-            startDate: searchParams.get("startDate") || "",
-            startTime: searchParams.get("startTime") || "",
-            endDate: searchParams.get("endDate") || "",
-            endTime: searchParams.get("endTime") || "",
+            vehicleTypeId: searchParams.get(constants.SEARCH_PARAMS.VEHICLE_TYPE_ID) || "",
+            vehicleOptionId: searchParams.get(constants.SEARCH_PARAMS.VEHICLE_OPTION_ID) || "",
+            agencyId: searchParams.get(constants.SEARCH_PARAMS.AGENCY_ID) || "",
+            startDate: searchParams.get(constants.SEARCH_PARAMS.START_DATE) || "",
+            startTime: searchParams.get(constants.SEARCH_PARAMS.START_TIME) || "",
+            endDate: searchParams.get(constants.SEARCH_PARAMS.END_DATE) || "",
+            endTime: searchParams.get(constants.SEARCH_PARAMS.END_TIME) || "",
+            transmissionType: searchParams.get(constants.SEARCH_PARAMS.TRANSMISSION_TYPE) || "",
+            fuelType: searchParams.get(constants.SEARCH_PARAMS.FUEL_TYPE) || "",
+            noOfDoors: searchParams.get(constants.SEARCH_PARAMS.NO_OF_DOORS) || "",
+            noOfSeats: searchParams.get(constants.SEARCH_PARAMS.NO_OF_SEATS) || "",
         });
     }, [searchParams]);
 
     const handleVehicleTypeChange = (id: string, checked: boolean) => {
         if (checked) {
-            searchParams.set("vehicleTypeId", id)
+            searchParams.set(constants.SEARCH_PARAMS.VEHICLE_TYPE_ID, id)
         } else {
-            searchParams.set("vehicleTypeId", "")
+            searchParams.set(constants.SEARCH_PARAMS.VEHICLE_TYPE_ID, "")
         }
         setSearchParams(searchParams)
     }
 
     const handleAgencyChange = (id: string, checked: boolean) => {
         if (checked) {
-            searchParams.set("agencyId", id)
+            searchParams.set(constants.SEARCH_PARAMS.AGENCY_ID, id)
         } else {
-            searchParams.set("agencyId", "")
+            searchParams.set(constants.SEARCH_PARAMS.AGENCY_ID, "")
         }
         setSearchParams(searchParams)
     }
 
     const handleVehicleOptionChange = (id: string, checked: boolean) => {
         if (checked) {
-            searchParams.set("vehicleOptionId", id)
+            searchParams.set(constants.SEARCH_PARAMS.VEHICLE_OPTION_ID, id)
         } else {
-            searchParams.set("vehicleOptionId", "")
+            searchParams.set(constants.SEARCH_PARAMS.VEHICLE_OPTION_ID, "")
         }
         setSearchParams(searchParams)
     }
@@ -123,7 +137,7 @@ function BookingSearch() {
                                     value={formData.startDate}
                                     onChange={e => {
                                         if (isNaN(Date.parse(e.target.value))) return;
-                                        searchParams.set("startDate", e.target.value)
+                                        searchParams.set(constants.SEARCH_PARAMS.START_DATE, e.target.value)
                                         setSearchParams(searchParams)
                                     }}
                                     className="input"
@@ -133,7 +147,7 @@ function BookingSearch() {
                                     value={formData.startTime}
                                     onChange={e => {
                                         if (!constants.TIME_FORMAT.test(e.target.value)) return;
-                                        searchParams.set("startTime", e.target.value)
+                                        searchParams.set(constants.SEARCH_PARAMS.START_TIME, e.target.value)
                                     }}
                                     className="input"
                                 />
@@ -146,7 +160,7 @@ function BookingSearch() {
                                     value={formData.endDate}
                                     onChange={e => {
                                         if (isNaN(Date.parse(e.target.value))) return;
-                                        searchParams.set("endDate", e.target.value)
+                                        searchParams.set(constants.SEARCH_PARAMS.END_DATE, e.target.value)
                                         setSearchParams(searchParams)
                                     }}
                                     className="input"
@@ -156,7 +170,7 @@ function BookingSearch() {
                                     value={formData.endTime}
                                     onChange={e => {
                                         if (!constants.TIME_FORMAT.test(e.target.value)) return;
-                                        searchParams.set("endTime", e.target.value)
+                                        searchParams.set(constants.SEARCH_PARAMS.END_TIME, e.target.value)
                                     }}
                                     className="input"
                                 />
@@ -175,44 +189,93 @@ function BookingSearch() {
                                         {el.title}
                                     </label>
                                 ))}
-                                <select className='select mt-5' value="">
-                                    <option value="" disabled={true}>Transmission Type</option>
-                                    <option value="AUTOMATIC">Automatic</option>
-                                    <option value="MANUAL">Manual</option>
-                                </select>
-                                <select className='select' value="">
-                                    <option value="" disabled={true}>Fuel Type</option>
-                                    <option value="Diesel">Diesel</option>
-                                    <option value="Gas">Gas</option>
-                                </select>
-                                <select className='select' value="">
-                                    <option value="" disabled={true}>No of Doors</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                </select>
-                                <select className='select' value="">
-                                    <option value="" disabled={true}>No of Persons</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                </select>
+                                <fieldset className="fieldset mt-3">
+                                    <legend className="fieldset-legend">Transmission Type</legend>
+                                    <select
+                                        className='select'
+                                        value={formData.transmissionType}
+                                        onChange={(e) => {
+                                            searchParams.set(constants.SEARCH_PARAMS.TRANSMISSION_TYPE, e.target.value)
+                                            setSearchParams(searchParams)
+                                        }
+                                        }>
+                                        <option value="">All</option>
+                                        <option value="AUTOMATIC">Automatic</option>
+                                        <option value="MANUAL">Manual</option>
+                                    </select>
+                                </fieldset>
+                                <fieldset className="fieldset">
+                                    <legend className="fieldset-legend">Fuel Type</legend>
+                                    <select
+                                        className='select'
+                                        value={formData.fuelType}
+                                        onChange={(e) => {
+                                            searchParams.set(constants.SEARCH_PARAMS.FUEL_TYPE, e.target.value)
+                                            setSearchParams(searchParams)
+                                        }
+                                        }>
+                                        <option value="">All</option>
+                                        <option value="PETROL">Petrol</option>
+                                        <option value="DIESEL">Diesel</option>
+                                        <option value="ELECTRIC">Electric</option>
+                                        <option value="HYBRID">Hybrid</option>
+                                        <option value="CNG">CNG</option>
+                                        <option value="LPG">LPG</option>
+                                        <option value="HYDROGEN">Hydrogen</option>
+                                        <option value="ETHANOL">Ethanol</option>
+                                        <option value="BIODIESEL">Biodiesel</option>
+                                        <option value="METHANOL">Methanol</option>
+                                        <option value="PROPANE">Propane</option>
+                                    </select>
+                                </fieldset>
+                                <fieldset className="fieldset">
+                                    <legend className="fieldset-legend">No of Doors</legend>
+                                    <select
+                                        className='select'
+                                        value={formData.noOfDoors}
+                                        onChange={(e) => {
+                                            searchParams.set(constants.SEARCH_PARAMS.NO_OF_DOORS, e.target.value)
+                                            setSearchParams(searchParams)
+                                        }
+                                        }>
+                                        <option value="">All</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </fieldset>
+                                <fieldset className="fieldset">
+                                    <legend className="fieldset-legend">No of Seats</legend>
+                                    <select
+                                        className='select'
+                                        value={formData.noOfSeats}
+                                        onChange={(e) => {
+                                            searchParams.set(constants.SEARCH_PARAMS.NO_OF_SEATS, e.target.value)
+                                            setSearchParams(searchParams)
+                                        }
+                                        }>
+                                        <option value="">All</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </fieldset>
                             </div>
                         </CollapseForm>
-                        <div className="p-5 w-full">
-                            <button className="btn btn-primary w-full">
-                                Search
-                            </button>
-                        </div>
                     </div>
                     <div className="col-span-3">
                         <div className="grid grid-cols-3 gap-10 w-full">
                             {vehicles.map((data, i) => <VehicleCard data={data} key={i} />)}
                         </div>
+                        {vehicles.length == 0 && (
+                            <div className='w-full h-20 flex justify-center items-center rounded border border-base-300 bg-base-200'>
+                                ¯\_(ツ)_/¯ No cars found ¯\_(ツ)_/¯
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

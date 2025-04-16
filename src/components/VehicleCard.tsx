@@ -37,7 +37,7 @@ function VehicleCard({ data }: { data: VehicleList }) {
                     </div>
                     <div className="flex flex-col items-center gap-1">
                         <GiOilySpiral className="size-8 text-accent" />
-                        <div className="text-sm">{data.fuel}</div>
+                        <div className="text-sm">{uppercaseToCapitalize(data.fuelType)}</div>
                     </div>
                     <div className="flex flex-col items-center gap-1">
                         <BsDoorOpen className="size-8 text-accent" />

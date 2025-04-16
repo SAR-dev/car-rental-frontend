@@ -1,6 +1,6 @@
 export interface VehicleList {
     id: string
-    fuel: string
+    fuelType: string
     image: string
     minPrice: number
     model: string
