@@ -13,6 +13,7 @@ export enum Collections {
 	Superusers = "_superusers",
 	Agencies = "agencies",
 	Features = "features",
+	Images = "images",
 	Reservations = "reservations",
 	Users = "users",
 	VehicleOptions = "vehicleOptions",
@@ -107,6 +108,13 @@ export type FeaturesRecord = {
 	updated?: IsoDateString
 }
 
+export type ImagesRecord = {
+	created?: IsoDateString
+	file: string
+	id: string
+	updated?: IsoDateString
+}
+
 export enum ReservationsStatusOptions {
 	"ONGOING" = "ONGOING",
 	"CONFIRMED" = "CONFIRMED",
@@ -191,7 +199,7 @@ export type VehiclesRecord = {
 	featuresIncluded?: RecordIdString[]
 	fuelType?: VehiclesFuelTypeOptions
 	id: string
-	images?: string[]
+	images?: RecordIdString[]
 	licenceType?: string
 	loadDimensions?: string
 	model?: string
@@ -213,6 +221,7 @@ export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemF
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
 export type AgenciesResponse<Texpand = unknown> = Required<AgenciesRecord> & BaseSystemFields<Texpand>
 export type FeaturesResponse<Texpand = unknown> = Required<FeaturesRecord> & BaseSystemFields<Texpand>
+export type ImagesResponse<Texpand = unknown> = Required<ImagesRecord> & BaseSystemFields<Texpand>
 export type ReservationsResponse<Texpand = unknown> = Required<ReservationsRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 export type VehicleOptionsResponse<Texpand = unknown> = Required<VehicleOptionsRecord> & BaseSystemFields<Texpand>
@@ -230,6 +239,7 @@ export type CollectionRecords = {
 	_superusers: SuperusersRecord
 	agencies: AgenciesRecord
 	features: FeaturesRecord
+	images: ImagesRecord
 	reservations: ReservationsRecord
 	users: UsersRecord
 	vehicleOptions: VehicleOptionsRecord
@@ -246,6 +256,7 @@ export type CollectionResponses = {
 	_superusers: SuperusersResponse
 	agencies: AgenciesResponse
 	features: FeaturesResponse
+	images: ImagesResponse
 	reservations: ReservationsResponse
 	users: UsersResponse
 	vehicleOptions: VehicleOptionsResponse
@@ -265,6 +276,7 @@ export type TypedPocketBase = PocketBase & {
 	collection(idOrName: '_superusers'): RecordService<SuperusersResponse>
 	collection(idOrName: 'agencies'): RecordService<AgenciesResponse>
 	collection(idOrName: 'features'): RecordService<FeaturesResponse>
+	collection(idOrName: 'images'): RecordService<ImagesResponse>
 	collection(idOrName: 'reservations'): RecordService<ReservationsResponse>
 	collection(idOrName: 'users'): RecordService<UsersResponse>
 	collection(idOrName: 'vehicleOptions'): RecordService<VehicleOptionsResponse>

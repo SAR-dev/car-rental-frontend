@@ -1,3 +1,5 @@
+import { FeaturesResponse, ImagesResponse, VehiclesResponse } from "./pocketbase";
+
 export interface VehicleList {
     id: string
     fuelType: string
@@ -9,3 +11,11 @@ export interface VehicleList {
     title: string
     transmissionType: string
 }
+
+export type TexpandVehicleDetailsResType = VehiclesResponse & {
+    expand: {
+        images: ImagesResponse[]
+        featuresIncluded: FeaturesResponse[]
+        featuresExcluded: FeaturesResponse[]
+    };
+};

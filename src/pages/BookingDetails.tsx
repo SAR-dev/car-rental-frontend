@@ -9,35 +9,46 @@ import { FaCheckCircle } from "react-icons/fa";
 import { MdError } from "react-icons/md";
 import { useParams } from 'react-router';
 import { pb } from '../contexts/PocketContext';
-import { Collections, VehiclesResponse } from '../types/pocketbase';
+import { Collections, VehiclePackagesResponse } from '../types/pocketbase';
 import NotFoundError from '../components/NotFoundError';
 import DataFetchError from '../components/DataFetchError';
 import { uppercaseToCapitalize } from '../helpers';
-
-const images = [
-    "https://cdn.pixabay.com/photo/2012/04/12/23/47/car-30984_1280.png",
-    "https://cdn.pixabay.com/photo/2012/04/12/23/48/car-30990_640.png",
-    "https://www.mbusa.com/content/dam/mb-nafta/us/myco/my24/amg-gt-class/2-door/all-vehicles/2024-AMG-GT55-COUPE-AVP-DR.png",
-    "https://gvelondon.com/wp-content/uploads/2023/07/veyron-super-sport-300-bugatti.png"
-]
+import { TexpandVehicleDetailsResType } from '../types/result';
+import { Img } from 'react-image';
 
 function BookingDetails() {
     const { id } = useParams();
-    const [data, setData] = useState<VehiclesResponse | null>(null)
+    const [data, setData] = useState<TexpandVehicleDetailsResType | null>(null)
+    const [packages, setPackages] = useState<VehiclePackagesResponse[]>([])
     const [notFound, setNotFound] = useState(false)
     const [fetchError, setFetchError] = useState(false)
 
-    const [activeImage, setActiveImage] = useState("")
+    const [activeImageIndex, setActiveImageIndex] = useState(0)
+    const [activePackageId, setActivePackageId] = useState("")
 
     useEffect(() => {
         if (!id || id.length == 0) return;
         pb
             .collection(Collections.Vehicles)
-            .getOne(id)
-            .then(res => {
-                setData(res)
-                setActiveImage(res.images[0])
+            .getOne(id, {
+                expand: "images, featuresIncluded, featuresExcluded"
             })
+            .then(res => {
+                setData(res as unknown as TexpandVehicleDetailsResType)
+            })
+            .catch(err => {
+                if (err.status == 404) {
+                    setNotFound(true)
+                    return;
+                }
+                setFetchError(err.status != 0)
+            })
+        pb
+            .collection(Collections.VehiclePackages)
+            .getList(1, 50, {
+                filter: `vehicle = '${id}'`
+            })
+            .then(res => setPackages(res.items))
     }, [id])
 
     if (notFound) return (
@@ -55,18 +66,34 @@ function BookingDetails() {
     return (
         <NavLayout>
             {data && (
-                <div className='py-16 px-5 container mx-auto'>
+                <div className='py-16 px-10 container mx-auto'>
                     <div className="grid grid-cols-2 gap-10">
-                        <div className="w-full flex flex-col gap-5">
-                            <div className="bg-base-200 rounded-lg w-full h-[35rem] flex items-center justify-center">
-                                <img className='h-full w-full object-cover rounded-lg' src={`${import.meta.env.VITE_API_URL}/api/files/vehicles/${data.id}/${activeImage}`} />
-                            </div>
-                            <div className="flex gap-3 mx-auto">
-                                {data.images.map((img, i) => (
-                                    <button className='h-20 w-32 p-2 rounded border border-base-300 hover:shadow hover:ring-2 hover:ring-primary ring-offset-4 cursor-pointer' onClick={() => setActiveImage(img)} key={i}>
-                                        <img className='object-cover h-full w-full rounded' src={`${import.meta.env.VITE_API_URL}/api/files/vehicles/${data.id}/${img}`} />
-                                    </button>
-                                ))}
+                        <div className="w-full h-fit sticky top-0">
+                            <div className="w-full p-5 bg-base-200 border border-base-300 rounded flex flex-col gap-5">
+                                <div className="bg-base-200 rounded-lg w-full h-[35rem] flex items-center justify-center">
+                                    <Img
+                                        className='object-cover h-full w-full rounded'
+                                        src={`${import.meta.env.VITE_API_URL}/api/files/images/${data.expand.images[activeImageIndex].id}/${data.expand.images[activeImageIndex].file}`}
+                                        loader={<div className="h-full w-full rounded bg-base-100" />}
+                                        unloader={<div className="h-full w-full rounded bg-base-100 flex justify-center items-center font-semibold text-base-content/50">Not Found</div>}
+                                    />
+                                </div>
+                                <div className="flex gap-3 justify-between">
+                                    {data.expand.images.map((img, i) => (
+                                        <button
+                                            className='h-20 w-full p-2 rounded bg-base-100 border border-base-300 hover:shadow hover:ring-2 hover:ring-primary ring-offset-4 cursor-pointer'
+                                            onClick={() => setActiveImageIndex(i)}
+                                            key={i}
+                                        >
+                                            <Img
+                                                className='object-cover h-full w-full rounded'
+                                                src={`${import.meta.env.VITE_API_URL}/api/files/images/${img.id}/${img.file}`}
+                                                loader={<div className="h-full w-full rounded bg-base-100" />}
+                                                unloader={<div className="h-full w-full rounded bg-base-100 flex justify-center items-center font-semibold text-base-content/50">Not Found</div>}
+                                            />
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                         <div className="flex flex-col gap-10">
@@ -115,15 +142,15 @@ function BookingDetails() {
                             <div className="bg-base-200 rounded p-5 w-full grid grid-cols-1 gap-5">
                                 <CollapseForm title='Kilometer package' titleClass='text-xl' defaultOpen>
                                     <div className="flex flex-col gap-3">
-                                        {[...Array(5)].map((_, i) => (
+                                        {packages.map((pac, i) => (
                                             <div className='flex gap-3' key={i}>
-                                                <input type="radio" className="radio" />
+                                                <input type="radio" className="radio" checked={pac.id == activePackageId} onChange={() => setActivePackageId(pac.id)} />
                                                 <div className="flex flex-col gap-1">
                                                     <div className="flex">
-                                                        <span className='font-semibold'>City</span><span className='mx-1'>:</span><span>0 kilometers package</span><span className='ml-1 font-bold text-primary'>CHF 40.-</span>
+                                                        <span className='font-semibold'>{pac.title}</span><span className='mx-1'>:</span><span>{pac.minKmLimit} kilometers package</span><span className='ml-1 font-bold text-primary'>CHF {pac.basePrice}.-</span>
                                                     </div>
                                                     <div className="flex text-sm opacity-80">
-                                                        <span>Price per additional km: </span><span className='ml-1 font-bold text-primary'>CHF 1.20/km</span>
+                                                        <span>Price per additional km: </span><span className='ml-1 font-bold text-primary'>CHF {pac.pricePerExtraKm}/km</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -132,50 +159,22 @@ function BookingDetails() {
                                 </CollapseForm>
                                 <CollapseForm title='What is included' titleClass='text-xl' defaultOpen>
                                     <div className="flex flex-col gap-3">
-                                        <div className="flex gap-3 items-center">
-                                            <FaCheckCircle className='size-5 text-success' />
-                                            <div>Highway vignette</div>
-                                        </div>
-                                        <div className="flex gap-3 items-center">
-                                            <FaCheckCircle className='size-5 text-success' />
-                                            <div>VAT</div>
-                                        </div>
-                                        <div className="flex gap-3 items-center">
-                                            <FaCheckCircle className='size-5 text-success' />
-                                            <div>Additional driver insurance</div>
-                                        </div>
-                                        <div className="flex gap-3 items-center">
-                                            <FaCheckCircle className='size-5 text-success' />
-                                            <div>Under 25 insurance</div>
-                                        </div>
-                                        <div className="flex gap-3 items-center">
-                                            <FaCheckCircle className='size-5 text-success' />
-                                            <div>Health insurance</div>
-                                        </div>
+                                        {data.expand.featuresIncluded.map((e, i) => (
+                                            <div className="flex gap-3 items-center" key={i}>
+                                                <FaCheckCircle className='size-5 text-success' />
+                                                <div>{e.title}</div>
+                                            </div>
+                                        ))}
                                     </div>
                                 </CollapseForm>
                                 <CollapseForm title='What is not included' titleClass='text-xl'>
                                     <div className="flex flex-col gap-3">
-                                        <div className="flex gap-3 items-center">
-                                            <MdError className='size-5 text-error' />
-                                            <div>Highway vignette</div>
-                                        </div>
-                                        <div className="flex gap-3 items-center">
-                                            <MdError className='size-5 text-error' />
-                                            <div>VAT</div>
-                                        </div>
-                                        <div className="flex gap-3 items-center">
-                                            <MdError className='size-5 text-error' />
-                                            <div>Additional driver insurance</div>
-                                        </div>
-                                        <div className="flex gap-3 items-center">
-                                            <MdError className='size-5 text-error' />
-                                            <div>Under 25 insurance</div>
-                                        </div>
-                                        <div className="flex gap-3 items-center">
-                                            <MdError className='size-5 text-error' />
-                                            <div>Health insurance</div>
-                                        </div>
+                                        {data.expand.featuresExcluded.map((e, i) => (
+                                            <div className="flex gap-3 items-center" key={i}>
+                                                <MdError className='size-5 text-error' />
+                                                <div>{e.title}</div>
+                                            </div>
+                                        ))}
                                     </div>
                                 </CollapseForm>
                             </div>
