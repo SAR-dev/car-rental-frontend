@@ -1,11 +1,11 @@
-import { RiFacebookCircleLine } from "react-icons/ri";
-import { FaInstagram } from "react-icons/fa6";
-import LocationCard from "../components/LocationCard";
+// import { RiFacebookCircleLine } from "react-icons/ri";
+// import { FaInstagram } from "react-icons/fa6";
+// import LocationCard from "../components/LocationCard";
 
 function Footer() {
     return (
         <>
-            <div className="py-16 bg-indigo-800">
+            {/* <div className="py-16 bg-indigo-800">
                 <div className="container px-10 mx-auto">
                     <div className="flex w-full justify-center">
                         <img className="h-20" src="https://www.patricklocation.ch/img/structure/logo-white.svg" alt="" />
@@ -18,7 +18,7 @@ function Footer() {
                         {[...Array(6)].map((_, i) => <LocationCard key={i} />)}
                     </div>
                 </div>
-            </div>
+            </div> */}
             <footer className="footer footer-horizontal footer-center bg-base-200 text-base-content rounded p-10">
                 <nav className="grid grid-flow-col gap-4">
                     <a className="link link-hover">About us</a>

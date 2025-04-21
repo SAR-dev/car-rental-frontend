@@ -12,7 +12,7 @@ function VehicleCard({ data }: { data: VehicleList }) {
     
     return (
         <div>
-            <div className='bg-base-200 p-5 rounded flex flex-col gap-3 w-full border border-base-300 shadow'>
+            <div className='bg-base-200 p-5 rounded flex flex-col gap-3 w-full border border-base-content/15 shadow'>
                 <div className='text-xl font-semibold'>
                     {data.title}
                 </div>

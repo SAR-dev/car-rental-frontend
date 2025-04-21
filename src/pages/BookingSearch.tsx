@@ -10,12 +10,26 @@ import { pb } from '../contexts/PocketContext';
 import { VehicleList } from '../types/result';
 import { api } from '../helpers';
 
+interface FormData {
+    vehicleTypeId: string
+    vehicleOptionIds: string[],
+    agencyId: string
+    startDate: string
+    startTime: string
+    endDate: string
+    endTime: string
+    transmissionType: string
+    fuelType: string
+    noOfDoors: string
+    noOfSeats: string
+}
+
 function BookingSearch() {
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<FormData>({
         vehicleTypeId: "",
-        vehicleOptionId: "",
+        vehicleOptionIds: [],
         agencyId: "",
         startDate: "",
         startTime: "",
@@ -54,7 +68,7 @@ function BookingSearch() {
         setFormData({
             ...formData,
             vehicleTypeId: searchParams.get(constants.SEARCH_PARAMS.VEHICLE_TYPE_ID) || "",
-            vehicleOptionId: searchParams.get(constants.SEARCH_PARAMS.VEHICLE_OPTION_ID) || "",
+            vehicleOptionIds: [...new Set((searchParams.get(constants.SEARCH_PARAMS.VEHICLE_OPTION_IDS) || "").split(","))],
             agencyId: searchParams.get(constants.SEARCH_PARAMS.AGENCY_ID) || "",
             startDate: searchParams.get(constants.SEARCH_PARAMS.START_DATE) || "",
             startTime: searchParams.get(constants.SEARCH_PARAMS.START_TIME) || "",
@@ -85,12 +99,15 @@ function BookingSearch() {
         setSearchParams(searchParams)
     }
 
-    const handleVehicleOptionChange = (id: string, checked: boolean) => {
-        if (checked) {
-            searchParams.set(constants.SEARCH_PARAMS.VEHICLE_OPTION_ID, id)
+    const handleVehicleOption = (vehicleOptionId: string) => {
+        const list = (searchParams.get(constants.SEARCH_PARAMS.VEHICLE_OPTION_IDS) || "").split(",")
+        let str = ""
+        if(list.includes(vehicleOptionId)){
+            str = list.filter(c => c != vehicleOptionId).join(",")
         } else {
-            searchParams.set(constants.SEARCH_PARAMS.VEHICLE_OPTION_ID, "")
+            str = [...list, vehicleOptionId].join(",")
         }
+        searchParams.set(constants.SEARCH_PARAMS.VEHICLE_OPTION_IDS, str)
         setSearchParams(searchParams)
     }
 
@@ -99,7 +116,7 @@ function BookingSearch() {
             <div className="container py-16 px-5 mx-auto">
                 <div className="text-5xl font-bold text-center mb-16">Rent a car in Switzerland</div>
                 <div className="grid grid-cols-4 gap-10">
-                    <div className='bg-base-200 rounded flex flex-col sticky top-0 h-fit border border-base-300 shadow'>
+                    <div className='bg-base-200 rounded flex flex-col sticky top-0 h-fit border border-base-content/15 shadow'>
                         <CollapseForm title='Vehicle Types'>
                             <div className="flex flex-col gap-2">
                                 {vehicleTypes.map(el => (
@@ -183,8 +200,8 @@ function BookingSearch() {
                                         <input
                                             type="checkbox"
                                             className="checkbox bg-white"
-                                            checked={formData.vehicleOptionId == el.id}
-                                            onChange={e => handleVehicleOptionChange(el.id, e.target.checked)}
+                                            checked={formData.vehicleOptionIds.includes(el.id)}
+                                            onChange={() => handleVehicleOption(el.id)}
                                         />
                                         {el.title}
                                     </label>
@@ -272,7 +289,7 @@ function BookingSearch() {
                             {vehicles.map((data, i) => <VehicleCard data={data} key={i} />)}
                         </div>
                         {vehicles.length == 0 && (
-                            <div className='w-full h-20 flex justify-center items-center rounded border border-base-300 bg-base-200'>
+                            <div className='w-full h-20 flex justify-center items-center rounded border border-base-content/15 bg-base-200'>
                                 ¯\_(ツ)_/¯ No cars found ¯\_(ツ)_/¯
                             </div>
                         )}

@@ -147,7 +147,7 @@ function Home() {
                         </div>
                     </div>
                 </div>
-                <div className="py-16 bg-base-200 border-y border-base-300">
+                <div className="py-16 bg-base-200 border-y border-base-content/15">
                     <div className="container px-10 mx-auto">
                         <div className="text-5xl font-semibold mb-5">
                             FAQs
@@ -155,7 +155,7 @@ function Home() {
 
                         <div className="grid grid-cols-2 gap-5">
                             {[...Array(20)].map((_, i) => (
-                                <div className="collapse collapse-plus bg-base-100 border border-base-300" key={i}>
+                                <div className="collapse collapse-plus bg-base-100 border border-base-content/15" key={i}>
                                     <input type="radio" />
                                     <div className="collapse-title font-semibold">How do I create an account?</div>
                                     <div className="collapse-content text-sm">Click the "Sign Up" button in the top right corner and follow the registration process.</div>

@@ -7,7 +7,6 @@ export const constants = {
     SEARCH_PARAMS: {
         VEHICLE_TYPE_ID: "vehicleTypeId",
         AGENCY_ID: "agencyId",
-        VEHICLE_OPTION_ID: "vehicleOptionId",
         START_DATE: "startDate",
         START_TIME: "startTime",
         END_DATE: "endDate",
@@ -15,6 +14,8 @@ export const constants = {
         TRANSMISSION_TYPE: "transmissionType",
         FUEL_TYPE: "fuelType",
         NO_OF_DOORS: "noOfDoors",
-        NO_OF_SEATS: "noOfSeats"
+        NO_OF_SEATS: "noOfSeats",
+        VEHICLE_PACKAGE_ID: "vehiclePackageId",
+        VEHICLE_OPTION_IDS: "vehicleOptions"
     }
 }

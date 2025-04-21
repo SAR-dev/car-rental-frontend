@@ -151,6 +151,8 @@ export type UsersRecord = {
 export type VehicleOptionsRecord = {
 	created?: IsoDateString
 	id: string
+	price?: number
+	subtitle?: string
 	title?: string
 	updated?: IsoDateString
 }
