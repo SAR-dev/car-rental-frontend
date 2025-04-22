@@ -133,16 +133,20 @@ export type ReservationsRecord = {
 }
 
 export type UsersRecord = {
+	address?: string
 	avatar?: string
+	contactNo?: string
 	created?: IsoDateString
 	dateOfBirth?: IsoDateString
-	driverLicenceNo?: string
+	driverLicenseNo?: string
+	driverLicensePlace?: string
 	email: string
 	emailVisibility?: boolean
 	firstName?: string
 	id: string
 	lastName?: string
 	password: string
+	postCode?: string
 	tokenKey: string
 	updated?: IsoDateString
 	verified?: boolean
@@ -152,8 +156,8 @@ export type VehicleOptionsRecord = {
 	created?: IsoDateString
 	id: string
 	price?: number
-	subtitle?: string
-	title?: string
+	subtitle: string
+	title: string
 	updated?: IsoDateString
 }
 

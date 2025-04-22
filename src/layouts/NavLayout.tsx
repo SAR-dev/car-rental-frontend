@@ -4,7 +4,7 @@ import Footer from '../components/Footer'
 
 function NavLayout({ children }: { children: ReactNode }) {
     return (
-        <div>
+        <div className='h-screen flex flex-col'>
             <NavBar />
             {children}
             <Footer />

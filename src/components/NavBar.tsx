@@ -4,9 +4,13 @@ import { FiShoppingBag } from "react-icons/fi";
 import { BsPersonCircle } from "react-icons/bs";
 import { RiFacebookCircleLine } from "react-icons/ri";
 import { FaInstagram } from "react-icons/fa6";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
+import { usePocket } from "../contexts/PocketContext";
 
 function NavBar() {
+    const location = useLocation()
+    const { user } = usePocket()
+
     return (
         <>
             <div className="w-full border-b border-base-content/15">
@@ -27,15 +31,20 @@ function NavBar() {
                         <button className="btn btn-ghost btn-circle">
                             <FiShoppingBag className="size-6" />
                         </button>
-                        <Link to="/sign-in" className="btn btn-ghost btn-circle">
-                            <BsPersonCircle className="size-6" />
-                        </Link>
+                        {!user && (
+                            <Link to={"/sign-in?next=" + location.pathname + location.search} className="btn btn-ghost btn-circle">
+                                <BsPersonCircle className="size-6" />
+                            </Link>
+                        )}
                         <button className="btn btn-ghost btn-circle">
                             <RiFacebookCircleLine className="size-6 text-blue-500" />
                         </button>
                         <button className="btn btn-ghost btn-circle">
                             <FaInstagram className="size-6 text-pink-500" />
                         </button>
+                        {!!user && (
+                            <Link to="/profile" className="btn btn-outline btn-accent">{user.firstName + " " + user.lastName}</Link>
+                        )}
                     </div>
                 </div>
             </div>

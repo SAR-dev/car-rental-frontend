@@ -16,6 +16,7 @@ export const constants = {
         NO_OF_DOORS: "noOfDoors",
         NO_OF_SEATS: "noOfSeats",
         VEHICLE_PACKAGE_ID: "vehiclePackageId",
-        VEHICLE_OPTION_IDS: "vehicleOptions"
+        VEHICLE_OPTION_IDS: "vehicleOptionIds",
+        NEXT: "next"
     }
 }

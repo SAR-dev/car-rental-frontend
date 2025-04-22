@@ -12,11 +12,11 @@ import { pb } from '../contexts/PocketContext';
 import { Collections, VehiclePackagesResponse } from '../types/pocketbase';
 import NotFoundError from '../components/NotFoundError';
 import DataFetchError from '../components/DataFetchError';
-import { uppercaseToCapitalize } from '../helpers';
+import { formatPrice, uppercaseToCapitalize } from '../helpers';
 import { TexpandVehicleDetailsResType } from '../types/result';
 import { Img } from 'react-image';
 import { constants } from '../constants';
-import { Description, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 
 interface FormData {
     agencyId: string
@@ -183,7 +183,7 @@ function BookingDetails() {
                                 <div className="text-sm">{data.noOfSeats} Persons</div>
                             </div>
                         </div>
-                        <div className="overflow-x-auto rounded-box border border-base-content/15 bg-base-100 w-fit">
+                        <div className="overflow-x-auto rounded-box border border-base-content/15 bg-base-100 w-full">
                             <table className="table">
                                 <tbody>
                                     <tr>
@@ -230,6 +230,9 @@ function BookingDetails() {
                                                 </div>
                                             </div>
                                         ))}
+                                        <div className="text-info text-sm font-semibold">
+                                            👆 Select a package to continue
+                                        </div>
                                     </div>
                                 </CollapseForm>
                             </div>
@@ -265,7 +268,7 @@ function BookingDetails() {
                             </div>
                             <hr className='text-base-content/25' />
                             <div className="p-5">
-                                <CollapseForm title='What is included' titleClass='text-xl' defaultOpen>
+                                <CollapseForm title='What is included' titleClass='text-xl'>
                                     <div className="flex flex-col gap-3">
                                         {data.expand.featuresIncluded.map((e, i) => (
                                             <div className="flex gap-3 items-center" key={i}>
@@ -278,7 +281,7 @@ function BookingDetails() {
                             </div>
                             <hr className='text-base-content/25' />
                             <div className="p-5">
-                                <CollapseForm title='What is not included' titleClass='text-xl' defaultOpen>
+                                <CollapseForm title='What is not included' titleClass='text-xl'>
                                     <div className="flex flex-col gap-3">
                                         {data.expand.featuresExcluded.map((e, i) => (
                                             <div className="flex gap-3 items-center" key={i}>
@@ -363,16 +366,19 @@ function BookingDetails() {
                                                 />
                                             </fieldset>
                                         </div>
+                                        <div className="text-info text-sm font-semibold">
+                                            👆 Please fill this form to continue
+                                        </div>
                                     </div>
                                 </CollapseForm>
                             </div>
                             <hr className='text-base-content/25' />
-                            <div className="flex justify-between p-5 bg-info/20">
+                            <div className="flex justify-between p-5 bg-base-content text-base-100">
                                 <div className="flex gap-3 items-center justify-end">
                                     <div className="text-xl font-semibold uppercase opacity-70">
                                         Amount To Pay
                                     </div>
-                                    <div className="text-xl font-bold">CHF {payments.map(e => e.price).reduce((partialSum, a) => partialSum + a, 0)}</div>
+                                    <div className="text-xl font-bold">CHF {formatPrice(payments.map(e => e.price).reduce((partialSum, a) => partialSum + a, 0))}</div>
                                 </div>
                                 <div className="flex gap-5 justify-end">
                                     <button className="btn" onClick={() => navigate(-1)}>Cancel</button>
@@ -416,7 +422,7 @@ function BookingDetails() {
                                 <tr className='text-primary'>
                                     <th></th>
                                     <th>Total Payment</th>
-                                    <th>CHF {payments.map(e => e.price).reduce((partialSum, a) => partialSum + a, 0)}</th>
+                                    <th>CHF {formatPrice(payments.map(e => e.price).reduce((partialSum, a) => partialSum + a, 0))}</th>
                                 </tr>
                             </tbody>
                         </table>

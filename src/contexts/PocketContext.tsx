@@ -13,8 +13,8 @@ interface DecodedToken {
 const ONE_MINUTE_IN_MS = 60000;
 
 interface PocketContextType {
-    oAuthLogin: () => Promise<void>;
-    logout: () => void;
+    logIn: ({email, password}:{email: string, password: string}) => Promise<void>;
+    logOut: () => void;
     user: UsersResponse | null;
     token: string | null;
 }
@@ -36,8 +36,8 @@ export const PocketProvider = ({ children }: { children: ReactNode }) => {
         pb.authStore.record as unknown as UsersResponse
     );
 
-    // Clear local storage and PocketBase store on logout
-    const logout = useCallback(() => {
+    // Clear local storage and PocketBase store on logOut
+    const logOut = useCallback(() => {
         localStorage.clear();
         pb.authStore.clear();
         setUser(null);
@@ -45,9 +45,9 @@ export const PocketProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     // Handle OAuth login with error handling
-    const oAuthLogin = useCallback(async () => {
+    const logIn = useCallback(async ({email, password}:{email: string, password: string}) => {
         try {
-            await pb.collection(Collections.Users).authWithOAuth2({ provider: "google" });
+            await pb.collection(Collections.Users).authWithPassword(email, password);
             setAuthToken()
         } catch (error) {
             console.error("OAuth login failed:", error);
@@ -70,9 +70,9 @@ export const PocketProvider = ({ children }: { children: ReactNode }) => {
             }
         } catch (error) {
             console.error("Failed to refresh session:", error);
-            logout();
+            logOut();
         }
-    }, [token, logout]);
+    }, [token, logOut]);
 
     // Sync auth store changes to local state
     useEffect(() => {
@@ -86,14 +86,14 @@ export const PocketProvider = ({ children }: { children: ReactNode }) => {
 
     // Clear session if token becomes invalid
     useEffect(() => {
-        if (!pb.authStore.isValid) logout();
-    }, [logout]);
+        if (!pb.authStore.isValid) logOut();
+    }, [logOut]);
 
     // Periodically refresh the session
     useInterval(refreshSession, token ? 2 * ONE_MINUTE_IN_MS : null);
 
     return (
-        <PocketContext.Provider value={{ oAuthLogin, logout, user, token }}>
+        <PocketContext.Provider value={{ logIn, logOut, user, token }}>
             {children}
         </PocketContext.Provider>
     );

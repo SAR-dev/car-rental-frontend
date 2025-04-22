@@ -57,7 +57,8 @@ function BookingSearch() {
         api
             .get("/api/vehicles", {
                 params: {
-                    ...formData
+                    ...formData,
+                    vehicleOptionIds: formData.vehicleOptionIds.filter(e => e.length > 0).join(",")
                 }
             })
             .then(res => setVehicles(res.data.vehicleList as unknown as VehicleList[]))

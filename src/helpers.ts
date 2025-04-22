@@ -29,6 +29,13 @@ export const formatPrice = (number: number) => {
   )
 }
 
+export const isValidGenericLicense = (input: string) => /^[A-Z0-9\-]{5,20}$/i.test(input);
+
+export const isValidDate = (str: string) => {
+  const date = new Date(str);
+  return !isNaN(date.getTime());
+};
+
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
