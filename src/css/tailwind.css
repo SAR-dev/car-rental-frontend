@@ -1,12 +1,11 @@
 @import "tailwindcss";
 @plugin "daisyui";
-
-
 @plugin "daisyui/theme" {
   name: "alphalord";
-  default: false;
+  default: true;
   prefersdark: false;
-  color-scheme: "light";
+  color-scheme: light;
+  
   --color-base-100: oklch(98% 0.002 247.839);
   --color-base-200: oklch(96% 0.003 264.542);
   --color-base-content/25: oklch(92% 0.006 264.531);
