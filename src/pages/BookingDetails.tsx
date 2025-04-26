@@ -7,7 +7,7 @@ import { BsPersonLinesFill } from "react-icons/bs";
 import CollapseForm from '../components/CollapseForm';
 import { FaCheckCircle } from "react-icons/fa";
 import { MdError } from "react-icons/md";
-import { useNavigate, useParams, useSearchParams } from 'react-router';
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
 import { pb } from '../contexts/PocketContext';
 import { Collections, VehiclePackagesResponse } from '../types/pocketbase';
 import NotFoundError from '../components/NotFoundError';
@@ -32,6 +32,7 @@ function BookingDetails() {
     const [searchParams, setSearchParams] = useSearchParams();
     const { id } = useParams();
     const navigate = useNavigate()
+    const location = useLocation()
     const [isloading, setIsloading] = useState(true)
 
     const [formData, setFormData] = useState<FormData>({
@@ -51,6 +52,16 @@ function BookingDetails() {
 
     const [activeImageIndex, setActiveImageIndex] = useState(0)
     const [isOpened, setIsOpened] = useState(false)
+
+    const enableRentNow = useMemo(
+        () => formData.vehiclePackageId.trim().length > 0
+            && formData.agencyId.trim().length > 0
+            && !isNaN(Date.parse(formData.startDate))
+            && constants.TIME_FORMAT.test(formData.startTime)
+            && !isNaN(Date.parse(formData.endDate))
+            && constants.TIME_FORMAT.test(formData.endTime),
+        [formData]
+    );
 
     const payments = useMemo(
         () => [...(packages.filter(e => e.id == formData.vehiclePackageId)?.map(e => {
@@ -334,6 +345,7 @@ function BookingDetails() {
                                                     onChange={e => {
                                                         if (!constants.TIME_FORMAT.test(e.target.value)) return;
                                                         searchParams.set(constants.SEARCH_PARAMS.START_TIME, e.target.value)
+                                                        setSearchParams(searchParams)
                                                     }}
                                                     className="input"
                                                 />
@@ -361,6 +373,7 @@ function BookingDetails() {
                                                     onChange={e => {
                                                         if (!constants.TIME_FORMAT.test(e.target.value)) return;
                                                         searchParams.set(constants.SEARCH_PARAMS.END_TIME, e.target.value)
+                                                        setSearchParams(searchParams)
                                                     }}
                                                     className="input"
                                                 />
@@ -382,7 +395,7 @@ function BookingDetails() {
                                 </div>
                                 <div className="flex gap-5 justify-end">
                                     <button className="btn" onClick={() => navigate(-1)}>Cancel</button>
-                                    <button className="btn btn-primary" onClick={() => setIsOpened(true)}>Rent Now</button>
+                                    <button className="btn btn-primary" onClick={() => setIsOpened(true)} disabled={!enableRentNow}>Rent Now</button>
                                 </div>
                             </div>
                         </div>
@@ -426,7 +439,12 @@ function BookingDetails() {
                                 </tr>
                             </tbody>
                         </table>
-                        <button className="btn w-full btn-primary mt-5">Proceed</button>
+                        <Link
+                            to={"/bookings/" + id + "/reservation" + location.search}
+                            className="btn w-full btn-primary mt-5"
+                        >
+                            Proceed
+                        </Link>
                     </DialogPanel>
                 </div>
             </Dialog>
