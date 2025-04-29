@@ -29,6 +29,25 @@ export const formatPrice = (number: number) => {
   )
 }
 
+export const formatDateToShortString = (dateInput: string) => {
+  const date = new Date(dateInput);
+  const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'short', year: 'numeric' };
+  return date.toLocaleDateString('en-GB', options);
+};
+
+export const convertTo12Hour = (time24: string): string => {
+  const [hourStr, minute] = time24.split(':');
+  const hour = parseInt(hourStr, 10);
+
+  const ampm = hour >= 12 ? 'PM' : 'AM';
+  const hour12 = hour % 12 || 12; // convert 0 -> 12
+
+  const paddedHour = hour12.toString().padStart(2, '0');
+  const paddedMinute = minute.toString().padStart(2, '0');
+
+  return `${paddedHour}:${paddedMinute} ${ampm}`;
+};
+
 export const isValidGenericLicense = (input: string) => /^[A-Z0-9\-]{5,20}$/i.test(input);
 
 export const isValidDate = (str: string) => {

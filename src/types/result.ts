@@ -21,3 +21,10 @@ export type TexpandVehicleDetailsResType = VehiclesResponse & {
         vehicleOptions: VehicleOptionsResponse[]
     };
 };
+
+export type TexpandVehicleDetailsShortResType = VehiclesResponse & {
+    expand: {
+        agencies: AgenciesResponse[]
+        vehicleOptions: VehicleOptionsResponse[]
+    };
+};

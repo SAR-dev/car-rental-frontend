@@ -43,7 +43,7 @@ function NavBar() {
                             <FaInstagram className="size-6 text-pink-500" />
                         </button>
                         {!!user && (
-                            <Link to="/profile" className="btn btn-outline btn-accent">{user.firstName + " " + user.lastName}</Link>
+                            <Link to="/profile" className="btn btn-neutral">{user.firstName + " " + user.lastName}</Link>
                         )}
                     </div>
                 </div>
