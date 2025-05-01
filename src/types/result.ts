@@ -1,4 +1,4 @@
-import { AgenciesResponse, FeaturesResponse, ImagesResponse, VehicleOptionsResponse, VehiclesResponse } from "./pocketbase";
+import { AgenciesResponse, FeaturesResponse, ImagesResponse, ProductsResponse, VehicleOptionsResponse, VehiclesResponse } from "./pocketbase";
 
 export interface VehicleList {
     id: string
@@ -12,6 +12,14 @@ export interface VehicleList {
     transmissionType: string
 }
 
+export interface ProductList {
+    id: string
+    title: string
+    image: string
+    price: number
+    summary: string
+}
+
 export type TexpandVehicleDetailsResType = VehiclesResponse & {
     expand: {
         images: ImagesResponse[]
@@ -19,6 +27,12 @@ export type TexpandVehicleDetailsResType = VehiclesResponse & {
         featuresExcluded: FeaturesResponse[]
         agencies: AgenciesResponse[]
         vehicleOptions: VehicleOptionsResponse[]
+    };
+};
+
+export type TexpandProductDetailsResType = ProductsResponse & {
+    expand: {
+        images: ImagesResponse[]
     };
 };
 

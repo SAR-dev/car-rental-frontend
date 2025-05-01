@@ -18,5 +18,6 @@ export const constants = {
         VEHICLE_PACKAGE_ID: "vehiclePackageId",
         VEHICLE_OPTION_IDS: "vehicleOptionIds",
         NEXT: "next"
-    }
+    },
+    CART_STORE_KEY: "cart"
 }

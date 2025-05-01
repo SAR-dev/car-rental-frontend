@@ -6,10 +6,12 @@ import { RiFacebookCircleLine } from "react-icons/ri";
 import { FaInstagram } from "react-icons/fa6";
 import { Link, useLocation } from "react-router";
 import { usePocket } from "../contexts/PocketContext";
+import { useCartStore } from "../stores/cartStore";
 
 function NavBar() {
     const location = useLocation()
-    const { user } = usePocket()
+    const { user, logOut } = usePocket()
+    const { products } = useCartStore()
 
     return (
         <>
@@ -28,9 +30,10 @@ function NavBar() {
                         <div className="font-semibold">+41 (0) 848 000 849</div>
                     </div>
                     <div className="flex gap-2 justify-end">
-                        <button className="btn btn-ghost btn-circle">
+                        <Link to="/cart" className="btn btn-ghost btn-circle relative">
                             <FiShoppingBag className="size-6" />
-                        </button>
+                            <div className="absolute top-0 right-0 h-6 w-6 bg-info flex justify-center items-center text-white rounded-full -m-2">{products.length}</div>
+                        </Link>
                         {!user && (
                             <Link to={"/sign-in?next=" + location.pathname + location.search} className="btn btn-ghost btn-circle">
                                 <BsPersonCircle className="size-6" />
@@ -43,7 +46,10 @@ function NavBar() {
                             <FaInstagram className="size-6 text-pink-500" />
                         </button>
                         {!!user && (
+                            <>
                             <Link to="/profile" className="btn btn-neutral">{user.firstName + " " + user.lastName}</Link>
+                            <button className="btn" onClick={logOut}>Sign Out</button>
+                            </>
                         )}
                     </div>
                 </div>
@@ -54,11 +60,8 @@ function NavBar() {
                     <div className="flex gap-5">
                         <Link to="/" className="btn btn-ghost">Home</Link>
                         <Link to="/bookings" className="btn btn-ghost">Rentals</Link>
-                        <button className="btn btn-ghost">Vehicle Types</button>
-                        <button className="btn btn-ghost">Garage</button>
-                        <button className="btn btn-ghost">Blog</button>
-                        <button className="btn btn-ghost">Contact</button>
-                        <button className="btn btn-primary">Book</button>
+                        <Link to="/products" className="btn btn-ghost">Products</Link>
+                        <Link to="/bookings" className="btn btn-primary">Book</Link>
                     </div>
                 </div>
             </div>

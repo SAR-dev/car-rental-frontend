@@ -29,6 +29,33 @@ export const formatPrice = (number: number) => {
   )
 }
 
+export function formatDateToYYYYMMDD(dateString: string): string {
+  const date = new Date(dateString);
+
+  if (isNaN(date.getTime())) {
+    throw new Error("Invalid date string");
+  }
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
+export function countDaysBetweenDates(startDate: string, endDate: string): number {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  
+  // Calculate the difference in time (in milliseconds)
+  const timeDiff = end.getTime() - start.getTime();
+  
+  // Convert time difference from milliseconds to days
+  const dayDiff = timeDiff / (1000 * 3600 * 24);
+  
+  return dayDiff;
+}
+
 export const formatDateToShortString = (dateInput: string) => {
   const date = new Date(dateInput);
   const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'short', year: 'numeric' };

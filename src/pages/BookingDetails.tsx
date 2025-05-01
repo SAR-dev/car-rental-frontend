@@ -12,7 +12,7 @@ import { pb } from '../contexts/PocketContext';
 import { Collections, VehiclePackagesResponse } from '../types/pocketbase';
 import NotFoundError from '../components/NotFoundError';
 import DataFetchError from '../components/DataFetchError';
-import { formatPrice, uppercaseToCapitalize } from '../helpers';
+import { countDaysBetweenDates, formatPrice, uppercaseToCapitalize } from '../helpers';
 import { TexpandVehicleDetailsResType } from '../types/result';
 import { Img } from 'react-image';
 import { constants } from '../constants';
@@ -391,7 +391,7 @@ function BookingDetails() {
                                     <div className="text-xl font-semibold uppercase opacity-70">
                                         Amount To Pay
                                     </div>
-                                    <div className="text-xl font-bold">CHF {formatPrice(payments.map(e => e.price).reduce((partialSum, a) => partialSum + a, 0))}</div>
+                                    <div className="text-xl font-bold">CHF {enableRentNow ? formatPrice(payments.map(e => e.price).reduce((partialSum, a) => partialSum + a, 0) * countDaysBetweenDates(formData.startDate, formData.endDate)) : 0}</div>
                                 </div>
                                 <div className="flex gap-5 justify-end">
                                     <button className="btn" onClick={() => navigate(-1)}>Cancel</button>
@@ -434,8 +434,18 @@ function BookingDetails() {
                                 ))}
                                 <tr className='text-primary'>
                                     <th></th>
-                                    <th>Total Payment</th>
+                                    <th>Daily Payment</th>
                                     <th>CHF {formatPrice(payments.map(e => e.price).reduce((partialSum, a) => partialSum + a, 0))}</th>
+                                </tr>
+                                <tr>
+                                    <th></th>
+                                    <th>No of Days</th>
+                                    <th>{countDaysBetweenDates(formData.startDate, formData.endDate)}</th>
+                                </tr>
+                                <tr className='text-primary'>
+                                    <th></th>
+                                    <th>Total Payment</th>
+                                    <th>CHF {formatPrice(payments.map(e => e.price).reduce((partialSum, a) => partialSum + a, 0) * countDaysBetweenDates(formData.startDate, formData.endDate))}</th>
                                 </tr>
                             </tbody>
                         </table>

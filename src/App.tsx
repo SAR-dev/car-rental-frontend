@@ -7,6 +7,10 @@ import BookingSearch from "./pages/BookingSearch";
 import BookingDetails from "./pages/BookingDetails";
 import SignIn from "./pages/SignIn";
 import BookingReservation from "./pages/BookingReservation";
+import Products from "./pages/Products";
+import ProductDetails from "./pages/ProductDetails";
+import Cart from "./pages/Cart";
+import Profile from "./pages/Profile";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +32,22 @@ const router = createBrowserRouter([
   {
     path: "/bookings/:id/reservation",
     element: <BookingReservation />,
+  },
+  {
+    path: "/products",
+    element: <Products />,
+  },
+  {
+    path: "/products/:id",
+    element: <ProductDetails />,
+  },
+  {
+    path: "/cart",
+    element: <Cart />,
+  },
+  {
+    path: "/profile",
+    element: <Profile />,
   },
 ]);
 

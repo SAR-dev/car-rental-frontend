@@ -14,6 +14,7 @@ export enum Collections {
 	Agencies = "agencies",
 	Features = "features",
 	Images = "images",
+	Products = "products",
 	Reservations = "reservations",
 	Users = "users",
 	VehicleOptions = "vehicleOptions",
@@ -115,6 +116,17 @@ export type ImagesRecord = {
 	updated?: IsoDateString
 }
 
+export type ProductsRecord = {
+	created?: IsoDateString
+	description: HTMLString
+	id: string
+	images?: RecordIdString[]
+	price?: number
+	summary: string
+	title: string
+	updated?: IsoDateString
+}
+
 export enum ReservationsStatusOptions {
 	"ONGOING" = "ONGOING",
 	"CONFIRMED" = "CONFIRMED",
@@ -125,6 +137,7 @@ export type ReservationsRecord = {
 	endAt?: IsoDateString
 	id: string
 	price?: number
+	products?: RecordIdString[]
 	startAt?: IsoDateString
 	status?: ReservationsStatusOptions
 	updated?: IsoDateString
@@ -137,14 +150,14 @@ export type UsersRecord = {
 	avatar?: string
 	contactNo?: string
 	created?: IsoDateString
-	dateOfBirth?: IsoDateString
-	driverLicenseNo?: string
+	dateOfBirth: IsoDateString
+	driverLicenseNo: string
 	driverLicensePlace?: string
 	email: string
 	emailVisibility?: boolean
-	firstName?: string
+	firstName: string
 	id: string
-	lastName?: string
+	lastName: string
 	password: string
 	postCode?: string
 	tokenKey: string
@@ -228,6 +241,7 @@ export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> &
 export type AgenciesResponse<Texpand = unknown> = Required<AgenciesRecord> & BaseSystemFields<Texpand>
 export type FeaturesResponse<Texpand = unknown> = Required<FeaturesRecord> & BaseSystemFields<Texpand>
 export type ImagesResponse<Texpand = unknown> = Required<ImagesRecord> & BaseSystemFields<Texpand>
+export type ProductsResponse<Texpand = unknown> = Required<ProductsRecord> & BaseSystemFields<Texpand>
 export type ReservationsResponse<Texpand = unknown> = Required<ReservationsRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 export type VehicleOptionsResponse<Texpand = unknown> = Required<VehicleOptionsRecord> & BaseSystemFields<Texpand>
@@ -246,6 +260,7 @@ export type CollectionRecords = {
 	agencies: AgenciesRecord
 	features: FeaturesRecord
 	images: ImagesRecord
+	products: ProductsRecord
 	reservations: ReservationsRecord
 	users: UsersRecord
 	vehicleOptions: VehicleOptionsRecord
@@ -263,6 +278,7 @@ export type CollectionResponses = {
 	agencies: AgenciesResponse
 	features: FeaturesResponse
 	images: ImagesResponse
+	products: ProductsResponse
 	reservations: ReservationsResponse
 	users: UsersResponse
 	vehicleOptions: VehicleOptionsResponse
@@ -283,6 +299,7 @@ export type TypedPocketBase = PocketBase & {
 	collection(idOrName: 'agencies'): RecordService<AgenciesResponse>
 	collection(idOrName: 'features'): RecordService<FeaturesResponse>
 	collection(idOrName: 'images'): RecordService<ImagesResponse>
+	collection(idOrName: 'products'): RecordService<ProductsResponse>
 	collection(idOrName: 'reservations'): RecordService<ReservationsResponse>
 	collection(idOrName: 'users'): RecordService<UsersResponse>
 	collection(idOrName: 'vehicleOptions'): RecordService<VehicleOptionsResponse>
