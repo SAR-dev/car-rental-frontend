@@ -14,10 +14,12 @@ import {
     formatDateToShortString,
     formatDateToYYYYMMDD,
     formatPrice,
+    formatToISOString,
 } from '../helpers';
 import CollapseForm from '../components/CollapseForm';
 import { useCartStore } from '../stores/cartStore';
 import { Img } from 'react-image';
+import toast from 'react-hot-toast';
 
 interface FormData {
     agencyId: string
@@ -29,16 +31,35 @@ interface FormData {
     vehicleOptionIds: string[]
 }
 
-interface UserUpdateData {
+interface BookingData {
+    user: string;
+    startAt: string;
+    endAt: string;
+    status: string;
+    vehicle: string;
+    agency: string;
+    products: string[];
+    vehiclePackage: string;
+    vehicleOptions: string[];
     firstName: string;
+    firstNameSec: string;
     lastName: string;
+    lastNameSec: string;
     dateOfBirth: string;
+    dateOfBirthSec: string;
     email: string;
-    driverLicenseNo: string;
-    driverLicensePlace: string;
+    emailSec: string;
     contactNo: string;
-    address: string;
+    contactNoSec: string;
+    driverLicenseNo: string;
+    driverLicenseNoSec: string;
+    driverLicensePlace: string;
+    driverLicensePlaceSec: string;
     postCode: string;
+    postCodeSec: string;
+    address: string;
+    addressSec: string;
+    depositMethod: string;
 }
 
 function BookingReservation() {
@@ -51,6 +72,7 @@ function BookingReservation() {
     const [showSecDriver, setShowSecDriver] = useState(false)
     const [products, setProducts] = useState<ProductList[]>([])
     const { products: productList } = useCartStore()
+    const [completed, setCompleted] = useState(false)
 
     const [formData, setFormData] = useState<FormData>({
         agencyId: "",
@@ -62,31 +84,41 @@ function BookingReservation() {
         vehicleOptionIds: []
     });
 
-    const [userData, setUserData] = useState<UserUpdateData>({
-        firstName: "",
-        lastName: "",
-        dateOfBirth: "",
-        email: "",
-        driverLicenseNo: "",
-        driverLicensePlace: "",
-        contactNo: "",
-        address: "",
-        postCode: "",
+    const [bookingData, setBookingData] = useState<BookingData>({
+        user: '',
+        startAt: '',
+        endAt: '',
+        status: '',
+        vehicle: '',
+        agency: '',
+        products: [],
+        vehiclePackage: '',
+        vehicleOptions: [],
+        firstName: '',
+        firstNameSec: '',
+        lastName: '',
+        lastNameSec: '',
+        dateOfBirth: '',
+        dateOfBirthSec: '',
+        email: '',
+        emailSec: '',
+        contactNo: '',
+        contactNoSec: '',
+        driverLicenseNo: '',
+        driverLicenseNoSec: '',
+        driverLicensePlace: '',
+        driverLicensePlaceSec: '',
+        postCode: '',
+        postCodeSec: '',
+        address: '',
+        addressSec: '',
+        depositMethod: ''
     })
 
     const [data, setData] = useState<TexpandVehicleDetailsShortResType | null>(null)
     const [packages, setPackages] = useState<VehiclePackagesResponse[]>([])
     const [notFound, setNotFound] = useState(false)
     const [fetchError, setFetchError] = useState(false)
-
-    // const payments = useMemo(
-    //     () => [...(packages.filter(e => e.id == formData.vehiclePackageId)?.map(e => {
-    //         return { type: "Kilometer Package", title: e.title, price: e.basePrice }
-    //     }) || []), ...(data?.expand.vehicleOptions.filter(e => formData.vehicleOptionIds.includes(e.id))?.map(e => {
-    //         return { type: "Additional Options", title: e.title, price: e.price }
-    //     }) || [])],
-    //     [formData, packages, data]
-    // );
 
     const pac = useMemo(() => packages.find(e => e.id == formData.vehiclePackageId), [formData, packages]);
 
@@ -98,7 +130,8 @@ function BookingReservation() {
     useEffect(() => {
         if (!user) return;
         pb.collection(Collections.Users).getOne(user.id).then(res => {
-            setUserData({
+            setBookingData({
+                ...bookingData,
                 firstName: res.firstName,
                 lastName: res.lastName,
                 dateOfBirth: formatDateToYYYYMMDD(res.dateOfBirth),
@@ -167,6 +200,24 @@ function BookingReservation() {
             return acc;
         }, {});
     }, [productList]);
+
+    const handleSubmit = () => {
+        const payload: BookingData = {
+            ...bookingData,
+            user: user?.id ?? "",
+            products: productList,
+            agency: formData.agencyId,
+            startAt: formatToISOString(formData.startDate, formData.startTime),
+            endAt: formatToISOString(formData.endDate, formData.endTime),
+            vehiclePackage: formData.vehiclePackageId,
+            vehicleOptions: formData.vehicleOptionIds
+        }
+        pb.collection(Collections.Reservations).create({
+            ...payload
+        })
+            .then(() => setCompleted(true))
+            .catch(() => toast.error("Reservation failed. Try again."))
+    }
 
     if (notFound) return (
         <NavLayout>
@@ -289,35 +340,35 @@ function BookingReservation() {
                     <div className="grid grid-cols-3 gap-5">
                         <fieldset className="fieldset">
                             <legend className="fieldset-legend">First Name</legend>
-                            <input type="text" className="input w-full" value={userData.firstName} onChange={e => setUserData({ ...userData, firstName: e.target.value })} />
+                            <input type="text" className="input w-full" value={bookingData.firstName} onChange={e => setBookingData({ ...bookingData, firstName: e.target.value })} />
                         </fieldset>
                         <fieldset className="fieldset">
                             <legend className="fieldset-legend">Last Name</legend>
-                            <input type="text" className="input w-full" value={userData.lastName} onChange={e => setUserData({ ...userData, lastName: e.target.value })} />
+                            <input type="text" className="input w-full" value={bookingData.lastName} onChange={e => setBookingData({ ...bookingData, lastName: e.target.value })} />
                         </fieldset>
                         <fieldset className="fieldset">
                             <legend className="fieldset-legend">Date of birth</legend>
-                            <input type="date" className="input w-full" value={userData.dateOfBirth} onChange={e => setUserData({ ...userData, dateOfBirth: e.target.value })} />
+                            <input type="date" className="input w-full" value={bookingData.dateOfBirth} onChange={e => setBookingData({ ...bookingData, dateOfBirth: e.target.value })} />
                         </fieldset>
                         <fieldset className="fieldset">
                             <legend className="fieldset-legend">Email</legend>
-                            <input type="text" className="input w-full" value={userData.email} onChange={e => setUserData({ ...userData, email: e.target.value })} />
+                            <input type="text" className="input w-full" value={bookingData.email} onChange={e => setBookingData({ ...bookingData, email: e.target.value })} />
                         </fieldset>
                         <fieldset className="fieldset">
                             <legend className="fieldset-legend">Driver Licence No</legend>
-                            <input type="text" className="input w-full" value={userData.driverLicenseNo} onChange={e => setUserData({ ...userData, driverLicenseNo: e.target.value })} />
+                            <input type="text" className="input w-full" value={bookingData.driverLicenseNo} onChange={e => setBookingData({ ...bookingData, driverLicenseNo: e.target.value })} />
                         </fieldset>
                         <fieldset className="fieldset">
                             <legend className="fieldset-legend">Issue place of the license</legend>
-                            <input type="text" className="input w-full" value={userData.driverLicensePlace} onChange={e => setUserData({ ...userData, driverLicensePlace: e.target.value })} />
+                            <input type="text" className="input w-full" value={bookingData.driverLicensePlace} onChange={e => setBookingData({ ...bookingData, driverLicensePlace: e.target.value })} />
                         </fieldset>
                         <fieldset className="fieldset">
                             <legend className="fieldset-legend">Post Code</legend>
-                            <input type="text" className="input w-full" value={userData.postCode} onChange={e => setUserData({ ...userData, postCode: e.target.value })} />
+                            <input type="text" className="input w-full" value={bookingData.postCode} onChange={e => setBookingData({ ...bookingData, postCode: e.target.value })} />
                         </fieldset>
                         <fieldset className="col-span-2 fieldset">
                             <legend className="fieldset-legend">Address</legend>
-                            <input type="text" className="input w-full" value={userData.address} onChange={e => setUserData({ ...userData, address: e.target.value })} />
+                            <input type="text" className="input w-full" value={bookingData.address} onChange={e => setBookingData({ ...bookingData, address: e.target.value })} />
                         </fieldset>
                         <div className="col-span-3">
                             <div className="flex items-center gap-3">
@@ -325,19 +376,27 @@ function BookingReservation() {
                                     Deposit method
                                 </div>
                                 <label className="label">
-                                    <input type="checkbox" className="checkbox" />
+                                    <input type="checkbox" className="checkbox" onChange={e => {
+                                        if (e.target.checked) setBookingData({ ...bookingData, depositMethod: "Cash" })
+                                    }} />
                                     Cash
                                 </label>
                                 <label className="label">
-                                    <input type="checkbox" className="checkbox" />
+                                    <input type="checkbox" className="checkbox" onChange={e => {
+                                        if (e.target.checked) setBookingData({ ...bookingData, depositMethod: "Account" })
+                                    }} />
                                     Account
                                 </label>
                                 <label className="label">
-                                    <input type="checkbox" className="checkbox" />
+                                    <input type="checkbox" className="checkbox" onChange={e => {
+                                        if (e.target.checked) setBookingData({ ...bookingData, depositMethod: "Mypos" })
+                                    }} />
                                     Mypos
                                 </label>
                                 <label className="label">
-                                    <input type="checkbox" className="checkbox" />
+                                    <input type="checkbox" className="checkbox" onChange={e => {
+                                        if (e.target.checked) setBookingData({ ...bookingData, depositMethod: "Worldline" })
+                                    }} />
                                     Worldline
                                 </label>
                             </div>
@@ -357,43 +416,49 @@ function BookingReservation() {
                             <div className="grid grid-cols-3 gap-5">
                                 <fieldset className="fieldset">
                                     <legend className="fieldset-legend">First Name</legend>
-                                    <input type="text" className="input w-full" />
+                                    <input type="text" className="input w-full" value={bookingData.firstNameSec} onChange={e => setBookingData({ ...bookingData, firstNameSec: e.target.value })} />
                                 </fieldset>
                                 <fieldset className="fieldset">
                                     <legend className="fieldset-legend">Last Name</legend>
-                                    <input type="text" className="input w-full" />
+                                    <input type="text" className="input w-full" value={bookingData.lastNameSec} onChange={e => setBookingData({ ...bookingData, lastNameSec: e.target.value })} />
                                 </fieldset>
                                 <fieldset className="fieldset">
                                     <legend className="fieldset-legend">Date of birth</legend>
-                                    <input type="date" className="input w-full" />
+                                    <input type="date" className="input w-full" value={bookingData.dateOfBirthSec} onChange={e => setBookingData({ ...bookingData, dateOfBirthSec: e.target.value })} />
                                 </fieldset>
                                 <fieldset className="fieldset">
                                     <legend className="fieldset-legend">Email</legend>
-                                    <input type="text" className="input w-full" />
+                                    <input type="text" className="input w-full" value={bookingData.emailSec} onChange={e => setBookingData({ ...bookingData, emailSec: e.target.value })} />
                                 </fieldset>
                                 <fieldset className="fieldset">
                                     <legend className="fieldset-legend">Driver Licence No</legend>
-                                    <input type="text" className="input w-full" />
+                                    <input type="text" className="input w-full" value={bookingData.driverLicenseNoSec} onChange={e => setBookingData({ ...bookingData, driverLicenseNoSec: e.target.value })} />
                                 </fieldset>
                                 <fieldset className="fieldset">
-                                    <legend className="fieldset-legend">Issue date of the license</legend>
-                                    <input type="date" className="input w-full" />
-                                    <p className="label">Must needed</p>
+                                    <legend className="fieldset-legend">Issue place of the license</legend>
+                                    <input type="text" className="input w-full" value={bookingData.driverLicensePlaceSec} onChange={e => setBookingData({ ...bookingData, driverLicensePlaceSec: e.target.value })} />
                                 </fieldset>
                                 <fieldset className="fieldset">
                                     <legend className="fieldset-legend">Post Code</legend>
-                                    <input type="text" className="input w-full" />
-                                    <p className="label">Must needed</p>
+                                    <input type="text" className="input w-full" value={bookingData.postCodeSec} onChange={e => setBookingData({ ...bookingData, postCodeSec: e.target.value })} />
                                 </fieldset>
                                 <fieldset className="col-span-2 fieldset">
                                     <legend className="fieldset-legend">Address</legend>
-                                    <input type="text" className="input w-full" />
-                                    <p className="label">Must needed</p>
+                                    <input type="text" className="input w-full" value={bookingData.addressSec} onChange={e => setBookingData({ ...bookingData, addressSec: e.target.value })} />
                                 </fieldset>
                             </div>
                         </>
                     )}
                 </div>
+                <button className="btn btn-primary w-full mt-10" onClick={handleSubmit}>Submit Request</button>
+                {completed && (
+                    <div className="fixed top-0 left-0 bg-base-300/80 w-full h-screen flex justify-center items-center">
+                        <div className='flex flex-col items-center'>
+                            <div className='text-xl font-semibold'>Reservation Completed</div>
+                            <button className="btn btn-info mt-5" onClick={() => navigate(-1)}>Go Back</button>
+                        </div>
+                    </div>
+                )}
             </div>
         </NavLayout>
     )

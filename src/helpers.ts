@@ -29,6 +29,12 @@ export const formatPrice = (number: number) => {
   )
 }
 
+export function formatToISOString(dateStr: string, timeStr: string): string {
+  const dateTimeString = `${dateStr}T${timeStr}:00.123Z`;
+  const date = new Date(dateTimeString);
+  return date.toISOString();
+}
+
 export function formatDateToYYYYMMDD(dateString: string): string {
   const date = new Date(dateString);
 
