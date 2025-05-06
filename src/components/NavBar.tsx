@@ -7,6 +7,7 @@ import { FaInstagram } from "react-icons/fa6";
 import { Link, useLocation } from "react-router";
 import { usePocket } from "../contexts/PocketContext";
 import { useCartStore } from "../stores/cartStore";
+import Logo from "../files/logo.png"
 
 function NavBar() {
     const location = useLocation()
@@ -56,7 +57,9 @@ function NavBar() {
             </div>
             <div className="w-full border-b border-base-content/15">
                 <div className="container py-5 px-10 mx-auto flex justify-between items-center">
-                    <img className="h-10" src="https://www.patricklocation.ch/img/structure/logo.svg" alt="" />
+                    <Link to="https://locationvictor.com/">
+                    <img className="h-10" src={Logo} alt="" />
+                    </Link>
                     <div className="flex gap-5">
                         <Link to="/" className="btn btn-ghost">Home</Link>
                         <Link to="/bookings" className="btn btn-ghost">Rentals</Link>
