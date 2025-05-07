@@ -13,13 +13,13 @@ function VehicleCard({ data }: { data: VehicleList }) {
     return (
         <div>
             <div className='bg-base-200 p-5 rounded flex flex-col gap-3 w-full border border-base-content/15 shadow'>
-                <div className='text-xl font-semibold'>
+                <div className='text-xl font-semibold poppins-bold'>
                     {data.title}
                 </div>
-                <div className="border-2 border-primary/20 h-10 px-5 rounded flex items-center justify-center font-semibold w-full bg-primary/10">
+                <div className="border-2 border-primary/20 h-10 px-5 rounded flex items-center justify-center font-semibold w-full bg-primary/50">
                     {data.model}
                 </div>
-                <div className="flex gap-1 items-end text-primary">
+                <div className="flex gap-1 items-end text-primary-content">
                     From <span className='text-4xl font-semibold'>CHF {data.minPrice}</span>/day
                 </div>
                 <div className="h-64">

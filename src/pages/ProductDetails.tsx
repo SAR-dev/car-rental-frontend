@@ -71,7 +71,7 @@ function ProductDetails() {
     return (
         <NavLayout>
             <div className='py-16 px-10 container mx-auto'>
-                <div className="grid grid-cols-2 gap-10">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                     <div className="w-full h-fit sticky top-0">
                         <div className="w-full p-5 bg-base-200 border border-base-content/15 rounded flex flex-col gap-5">
                             <div className="bg-base-200 rounded-lg w-full h-[35rem] flex items-center justify-center">
@@ -101,7 +101,7 @@ function ProductDetails() {
                         </div>
                     </div>
                     <div className="flex flex-col gap-10">
-                        <div className='text-4xl font-semibold'>{data.title}</div>
+                        <div className='text-4xl font-semibold poppins-bold'>{data.title}</div>
                         <div className="text-blue-700 font-bold text-3xl">CHF ${formatPrice(data.price)}</div>
                         <button className="btn btn-primary" onClick={handleAddProduct}>Add to Cart</button>
                         <article className="prose text-base-content max-w-[150ch]">

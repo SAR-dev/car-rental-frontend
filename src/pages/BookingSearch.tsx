@@ -115,9 +115,9 @@ function BookingSearch() {
     return (
         <NavLayout>
             <div className="container py-16 px-5 mx-auto">
-                <div className="text-5xl font-bold text-center mb-16">Rent a car in Switzerland</div>
-                <div className="grid grid-cols-4 gap-10">
-                    <div className='bg-base-200 rounded flex flex-col sticky top-0 h-fit border border-base-content/15 shadow'>
+                <div className="text-5xl font-bold text-center mb-16 poppins-bold">Rent a car in Switzerland</div>
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
+                    <div className='bg-base-200 rounded flex flex-col lg:sticky top-0 h-fit border border-base-content/15 shadow'>
                         <CollapseForm title='Vehicle Types'>
                             <div className="flex flex-col gap-2">
                                 {vehicleTypes.map(el => (
@@ -285,8 +285,8 @@ function BookingSearch() {
                             </div>
                         </CollapseForm>
                     </div>
-                    <div className="col-span-3">
-                        <div className="grid grid-cols-3 gap-10 w-full">
+                    <div className="lg:col-span-3">
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 w-full">
                             {vehicles.map((data, i) => <VehicleCard data={data} key={i} />)}
                         </div>
                         {vehicles.length == 0 && (

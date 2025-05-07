@@ -36,7 +36,7 @@ function Home() {
             <div className="flex w-full my-16 justify-center">
                 <div className="px-10 py-10 rounded-t bg-primary w-[25rem]">
                     <div className="flex flex-col gap-5">
-                        <div className="text-2xl text-center font-semibold text-white">Rent a car now</div>
+                        <div className="text-2xl text-center font-semibold poppins-bold">Rent a car now</div>
                         <select
                             value={formData.vehicleTypeId}
                             onChange={e => setFormData({ ...formData, vehicleTypeId: e.target.value })}

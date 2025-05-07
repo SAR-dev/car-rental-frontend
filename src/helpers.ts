@@ -38,9 +38,7 @@ export function formatToISOString(dateStr: string, timeStr: string): string {
 export function formatDateToYYYYMMDD(dateString: string): string {
   const date = new Date(dateString);
 
-  if (isNaN(date.getTime())) {
-    throw new Error("Invalid date string");
-  }
+  if (isNaN(date.getTime())) return "";
 
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
@@ -52,6 +50,8 @@ export function formatDateToYYYYMMDD(dateString: string): string {
 export function countDaysBetweenDates(startDate: string, endDate: string): number {
   const start = new Date(startDate);
   const end = new Date(endDate);
+
+  if(!start || !end) return 0;
   
   // Calculate the difference in time (in milliseconds)
   const timeDiff = end.getTime() - start.getTime();
@@ -68,7 +68,8 @@ export const formatDateToShortString = (dateInput: string) => {
   return date.toLocaleDateString('en-GB', options);
 };
 
-export const convertTo12Hour = (time24: string): string => {
+export const convertTo12Hour = (time24?: string): string => {
+  if(!time24) return "";
   const [hourStr, minute] = time24.split(':');
   const hour = parseInt(hourStr, 10);
 
@@ -87,6 +88,24 @@ export const isValidDate = (str: string) => {
   const date = new Date(str);
   return !isNaN(date.getTime());
 };
+
+export function formatTo12HourDateTime(input: string): string {
+  const date = new Date(input);
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, '0');
+  const day = `${date.getDate()}`.padStart(2, '0');
+
+  let hours = date.getHours();
+  const minutes = `${date.getMinutes()}`.padStart(2, '0');
+
+  const period = hours >= 12 ? 'pm' : 'am';
+  const hour12 = hours % 12 === 0 ? 12 : hours % 12;
+  const formattedHour = `${hour12}`.padStart(2, '0');
+
+  return `${year}-${month}-${day} ${formattedHour}:${minutes} ${period}`;
+}
+
+
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,

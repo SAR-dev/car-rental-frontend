@@ -11,12 +11,12 @@ function NavBar() {
     const { products } = useCartStore()
 
     return (
-        <div className="w-full border-b border-base-content/15">
+        <div className="w-full bg-base-content text-base-100">
             <div className="container py-5 px-10 mx-auto flex justify-between items-center">
                 <Link to="https://locationvictor.com/">
                     <img className="h-10" src={Logo} alt="" />
                 </Link>
-                <div className="flex gap-5">
+                <div className="gap-5 hidden md:flex">
                     <Link to="/" className="btn btn-ghost">Home</Link>
                     <Link to="/products" className="btn btn-ghost">Products</Link>
                     <Link to="/bookings" className="btn btn-primary">Book</Link>
@@ -33,12 +33,17 @@ function NavBar() {
                     )}
                     {!!user && (
                         <>
-                            <Link to="/profile" className="btn btn-neutral">{user.firstName + " " + user.lastName}</Link>
+                            <Link to="/profile" className="btn btn-outline">{user.firstName + " " + user.lastName}</Link>
                             <button className="btn" onClick={logOut}>Sign Out</button>
                         </>
                     )}
                 </div>
             </div>
+            <div className="flex py-5 px-16 justify-between w-full border-t border-base-300 md:hidden">
+                    <Link to="/" className="btn btn-ghost">Home</Link>
+                    <Link to="/products" className="btn btn-ghost">Products</Link>
+                    <Link to="/bookings" className="btn btn-primary">Book</Link>
+                </div>
         </div>
     )
 }

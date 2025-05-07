@@ -6,6 +6,7 @@ type CartStore = {
   products: string[]
   addProduct: (productId: string) => void
   removeProduct: (productId: string) => void
+  clearProducts: () => void
 }
 
 function removeFirstMatch(
@@ -28,6 +29,11 @@ export const useCartStore = create<CartStore>()(
       removeProduct: (productId) => {
         set((state) => ({
           products: removeFirstMatch(state.products, (id) => id === productId),
+        }))
+      },
+      clearProducts: () => {
+        set(() => ({
+          products: [],
         }))
       },
     }),

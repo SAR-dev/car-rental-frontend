@@ -25,10 +25,10 @@ function Products() {
     return (
         <NavLayout>
             <div className='py-16 px-10 container mx-auto'>
-                <div className="text-xl font-semibold">Our Products, Your Choice</div>
-                <div className="grid grid-cols-2 gap-5 my-10">
+                <div className="text-3xl font-semibold poppins-bold">Our Products, Your Choice</div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 my-10">
                     {products.map((data, i) => (
-                        <div className="border border-base-200 shadow rounded-lg p-5 flex gap-8" key={i}>
+                        <div className="border border-base-300 shadow rounded-lg p-5 flex flex-col lg:flex-row gap-8" key={i}>
                             <div className='h-64 w-64 flex-shrink-0'>
                                 <Img
                                     className='h-64 w-full object-cover rounded'
@@ -39,11 +39,11 @@ function Products() {
                             </div>
                             <div className='flex flex-col justify-between'>
                                 <div>
-                                    <Link to={`/products/${data.id}`} className="font-semibold text-xl hover:text-info">{data.title}</Link>
+                                    <Link to={`/products/${data.id}`} className="font-semibold text-xl hover:text-info poppins-bold">{data.title}</Link>
                                     <div className="mt-3 line-clamp-3">{data.summary}</div>
                                     <div className="text-blue-700 font-bold mt-2 text-xl">CHF ${formatPrice(data.price)}</div>
                                 </div>
-                                <button className="btn btn-primary" onClick={() => handleAddProduct(data.id)}>Add to Cart</button>
+                                <button className="btn btn-primary mt-5" onClick={() => handleAddProduct(data.id)}>Add to Cart</button>
                             </div>
                         </div>
                     ))}

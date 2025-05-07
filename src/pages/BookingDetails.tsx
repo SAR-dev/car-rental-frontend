@@ -144,8 +144,8 @@ function BookingDetails() {
     return (
         <NavLayout>
             <div className='py-16 px-10 container mx-auto'>
-                <div className="grid grid-cols-2 gap-10">
-                    <div className="w-full h-fit sticky top-0">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                    <div className="w-full h-fit lg:sticky top-0">
                         <div className="w-full p-5 bg-base-200 border border-base-content/15 rounded flex flex-col gap-5">
                             <div className="bg-base-200 rounded-lg w-full h-[35rem] flex items-center justify-center">
                                 <Img
@@ -174,8 +174,8 @@ function BookingDetails() {
                         </div>
                     </div>
                     <div className="flex flex-col gap-10">
-                        <div className='text-4xl font-semibold'>{data.title}</div>
-                        <div className='font-semibold bg-accent py-2 px-4 rounded w-fit -my-2'>{data.model}</div>
+                        <div className='text-4xl font-semibold poppins-bold'>{data.title}</div>
+                        <div className='font-semibold bg-base-content text-base-100 py-2 px-4 rounded w-fit -my-2'>{data.model}</div>
                         <div className="flex gap-5 w-fit">
                             <div className="flex flex-col items-center gap-1">
                                 <BsGear className="size-8 text-accent" />
@@ -404,8 +404,8 @@ function BookingDetails() {
             </div>
             <Dialog open={isOpened} onClose={() => setIsOpened(false)} className="relative z-50">
                 <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-base-300/50">
-                    <DialogPanel className="max-w-xl space-y-4 border border-base-200 bg-base-100 p-10">
-                        <DialogTitle className="font-bold">Review Selected Options</DialogTitle>
+                    <DialogPanel className="max-w-xl space-y-4 border border-base-300 bg-base-100 shadow p-10">
+                        <DialogTitle className="font-bold poppins-bold">Review Selected Options</DialogTitle>
                         <table className="table border border-base-200 mt-5">
                             <tbody>
                                 <tr>
