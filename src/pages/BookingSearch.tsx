@@ -8,7 +8,7 @@ import { AgenciesRecord, Collections, VehicleOptionsRecord, VehicleTypesRecord }
 import { constants } from '../constants';
 import { pb } from '../contexts/PocketContext';
 import { VehicleList } from '../types/result';
-import { api } from '../helpers';
+import { api, generateTimeList } from '../helpers';
 
 interface FormData {
     vehicleTypeId: string
@@ -23,6 +23,8 @@ interface FormData {
     noOfDoors: string
     noOfSeats: string
 }
+
+const timeList = generateTimeList(constants.TIME_RANGE.MIN, constants.TIME_RANGE.MAX)
 
 function BookingSearch() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -103,7 +105,7 @@ function BookingSearch() {
     const handleVehicleOption = (vehicleOptionId: string) => {
         const list = (searchParams.get(constants.SEARCH_PARAMS.VEHICLE_OPTION_IDS) || "").split(",")
         let str = ""
-        if(list.includes(vehicleOptionId)){
+        if (list.includes(vehicleOptionId)) {
             str = list.filter(c => c != vehicleOptionId).join(",")
         } else {
             str = [...list, vehicleOptionId].join(",")
@@ -115,7 +117,7 @@ function BookingSearch() {
     return (
         <NavLayout>
             <div className="container py-16 px-5 mx-auto">
-                <div className="text-5xl font-bold text-center mb-16 poppins-bold">Rent a car in Switzerland</div>
+                <div className="text-5xl font-bold text-center mb-16 poppins-bold">Louer une voiture en France</div>
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
                     <div className='bg-base-200 rounded flex flex-col lg:sticky top-0 h-fit border border-base-content/15 shadow'>
                         <CollapseForm title='Vehicle Types'>
@@ -160,15 +162,15 @@ function BookingSearch() {
                                     }}
                                     className="input"
                                 />
-                                <input
-                                    type="time"
+                                <select
                                     value={formData.startTime}
-                                    onChange={e => {
-                                        if (!constants.TIME_FORMAT.test(e.target.value)) return;
-                                        searchParams.set(constants.SEARCH_PARAMS.START_TIME, e.target.value)
-                                    }}
-                                    className="input"
-                                />
+                                    onChange={e => searchParams.set(constants.SEARCH_PARAMS.START_TIME, e.target.value)}
+                                    className="select"
+                                >
+                                    {timeList.map(e => (
+                                        <option key={e} value={e}>{e}</option>
+                                    ))}
+                                </select>
                             </div>
                         </CollapseForm>
                         <CollapseForm title='Return' defaultOpen>
@@ -183,15 +185,15 @@ function BookingSearch() {
                                     }}
                                     className="input"
                                 />
-                                <input
-                                    type="time"
+                                <select
                                     value={formData.endTime}
-                                    onChange={e => {
-                                        if (!constants.TIME_FORMAT.test(e.target.value)) return;
-                                        searchParams.set(constants.SEARCH_PARAMS.END_TIME, e.target.value)
-                                    }}
-                                    className="input"
-                                />
+                                    onChange={e => searchParams.set(constants.SEARCH_PARAMS.END_TIME, e.target.value)}
+                                    className="select"
+                                >
+                                    {timeList.map(e => (
+                                        <option key={e} value={e}>{e}</option>
+                                    ))}
+                                </select>
                             </div>
                         </CollapseForm>
                         <CollapseForm title='Options'>

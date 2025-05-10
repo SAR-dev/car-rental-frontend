@@ -12,7 +12,7 @@ import {
     convertTo12Hour,
     countDaysBetweenDates,
     formatDateToShortString,
-    formatDateToYYYYMMDD,
+    formatDateStringToYYYYMMDD,
     formatPrice,
     formatToISOString,
 } from '../helpers';
@@ -134,7 +134,7 @@ function BookingReservation() {
                 ...bookingData,
                 firstName: res.firstName,
                 lastName: res.lastName,
-                dateOfBirth: formatDateToYYYYMMDD(res.dateOfBirth),
+                dateOfBirth: formatDateStringToYYYYMMDD(res.dateOfBirth),
                 email: res.email,
                 driverLicenseNo: res.driverLicenseNo,
                 driverLicensePlace: res.driverLicensePlace,

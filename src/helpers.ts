@@ -35,7 +35,7 @@ export function formatToISOString(dateStr: string, timeStr: string): string {
   return date.toISOString();
 }
 
-export function formatDateToYYYYMMDD(dateString: string): string {
+export function formatDateStringToYYYYMMDD(dateString: string): string {
   const date = new Date(dateString);
 
   if (isNaN(date.getTime())) return "";
@@ -47,18 +47,25 @@ export function formatDateToYYYYMMDD(dateString: string): string {
   return `${year}-${month}-${day}`;
 }
 
+export function formatDateToYYYYMMDD(date: Date) {
+  const d = String(date.getDate()).padStart(2, '0');
+  const m = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+  const y = date.getFullYear();
+  return `${y}-${m}-${d}`;
+}
+
 export function countDaysBetweenDates(startDate: string, endDate: string): number {
   const start = new Date(startDate);
   const end = new Date(endDate);
 
-  if(!start || !end) return 0;
-  
+  if (!start || !end) return 0;
+
   // Calculate the difference in time (in milliseconds)
   const timeDiff = end.getTime() - start.getTime();
-  
+
   // Convert time difference from milliseconds to days
   const dayDiff = timeDiff / (1000 * 3600 * 24);
-  
+
   return dayDiff;
 }
 
@@ -69,7 +76,7 @@ export const formatDateToShortString = (dateInput: string) => {
 };
 
 export const convertTo12Hour = (time24?: string): string => {
-  if(!time24) return "";
+  if (!time24) return "";
   const [hourStr, minute] = time24.split(':');
   const hour = parseInt(hourStr, 10);
 
@@ -105,7 +112,27 @@ export function formatTo12HourDateTime(input: string): string {
   return `${year}-${month}-${day} ${formattedHour}:${minutes} ${period}`;
 }
 
+export function generateTimeList(min: string, max: string): string[] {
+  const result: string[] = [];
 
+  const [minHour, minMinute] = min.split(":").map(Number);
+  const [maxHour, maxMinute] = max.split(":").map(Number);
+
+  const start = new Date();
+  start.setHours(minHour, minMinute, 0, 0);
+
+  const end = new Date();
+  end.setHours(maxHour, maxMinute, 0, 0);
+
+  while (start <= end) {
+    const hh = String(start.getHours()).padStart(2, "0");
+    const mm = String(start.getMinutes()).padStart(2, "0");
+    result.push(`${hh}:${mm}`);
+    start.setMinutes(start.getMinutes() + 30);
+  }
+
+  return result;
+}
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,

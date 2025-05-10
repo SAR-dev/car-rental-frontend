@@ -12,13 +12,13 @@ function NavBar() {
 
     return (
         <div className="w-full bg-base-content text-base-100">
-            <div className="container py-5 px-10 mx-auto flex justify-between items-center">
+            <div className="container py-8 px-10 mx-auto flex justify-between items-center">
                 <Link to="https://locationvictor.com/">
                     <img className="h-10" src={Logo} alt="" />
                 </Link>
                 <div className="gap-5 hidden md:flex">
-                    <Link to="/" className="btn btn-ghost">Home</Link>
-                    <Link to="/products" className="btn btn-ghost">Products</Link>
+                    <Link to="/" className="btn btn-ghost">Accueil</Link>
+                    <Link to="/products" className="btn btn-ghost">Produits</Link>
                     <Link to="/bookings" className="btn btn-primary">Book</Link>
                 </div>
                 <div className="flex gap-2 justify-end">
@@ -40,8 +40,8 @@ function NavBar() {
                 </div>
             </div>
             <div className="flex py-5 px-16 justify-between w-full border-t border-base-300 md:hidden">
-                    <Link to="/" className="btn btn-ghost">Home</Link>
-                    <Link to="/products" className="btn btn-ghost">Products</Link>
+                    <Link to="/" className="btn btn-ghost">Accueil</Link>
+                    <Link to="/products" className="btn btn-ghost">Produits</Link>
                     <Link to="/bookings" className="btn btn-primary">Book</Link>
                 </div>
         </div>

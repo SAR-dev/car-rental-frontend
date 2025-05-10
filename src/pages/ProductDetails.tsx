@@ -103,7 +103,7 @@ function ProductDetails() {
                     <div className="flex flex-col gap-10">
                         <div className='text-4xl font-semibold poppins-bold'>{data.title}</div>
                         <div className="text-blue-700 font-bold text-3xl">CHF ${formatPrice(data.price)}</div>
-                        <button className="btn btn-primary" onClick={handleAddProduct}>Add to Cart</button>
+                        <button className="btn btn-primary" onClick={handleAddProduct}>Ajouter au panier</button>
                         <article className="prose text-base-content max-w-[150ch]">
                             {parse(data.description)}
                         </article>

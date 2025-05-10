@@ -32,24 +32,24 @@ function VehicleCard({ data }: { data: VehicleList }) {
                 </div>
                 <div className="flex justify-between">
                     <div className="flex flex-col items-center gap-1">
-                        <BsGear className="size-8 text-accent" />
+                        <BsGear className="size-8" />
                         <div className="text-sm">{uppercaseToCapitalize(data.transmissionType)}</div>
                     </div>
                     <div className="flex flex-col items-center gap-1">
-                        <GiOilySpiral className="size-8 text-accent" />
+                        <GiOilySpiral className="size-8" />
                         <div className="text-sm">{uppercaseToCapitalize(data.fuelType)}</div>
                     </div>
                     <div className="flex flex-col items-center gap-1">
-                        <BsDoorOpen className="size-8 text-accent" />
+                        <BsDoorOpen className="size-8" />
                         <div className="text-sm">{data.noOfDoors} Doors</div>
                     </div>
                     <div className="flex flex-col items-center gap-1">
-                        <BsPersonLinesFill className="size-8 text-accent" />
+                        <BsPersonLinesFill className="size-8" />
                         <div className="text-sm">{data.noOfSeats} Persons</div>
                     </div>
                 </div>
                 <Link to={`/bookings/${data.id}?${new URLSearchParams(searchParams).toString()}`} className="btn btn-primary">
-                    Book Now
+                    Réservez maintenant
                 </Link>
             </div>
         </div>

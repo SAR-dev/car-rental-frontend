@@ -25,7 +25,7 @@ function Products() {
     return (
         <NavLayout>
             <div className='py-16 px-10 container mx-auto'>
-                <div className="text-3xl font-semibold poppins-bold">Our Products, Your Choice</div>
+                <div className="text-3xl font-semibold poppins-bold">Nos produits, votre choix</div>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 my-10">
                     {products.map((data, i) => (
                         <div className="border border-base-300 shadow rounded-lg p-5 flex flex-col lg:flex-row gap-8" key={i}>
@@ -43,7 +43,7 @@ function Products() {
                                     <div className="mt-3 line-clamp-3">{data.summary}</div>
                                     <div className="text-blue-700 font-bold mt-2 text-xl">CHF ${formatPrice(data.price)}</div>
                                 </div>
-                                <button className="btn btn-primary mt-5" onClick={() => handleAddProduct(data.id)}>Add to Cart</button>
+                                <button className="btn btn-primary mt-5" onClick={() => handleAddProduct(data.id)}>Ajouter au panier</button>
                             </div>
                         </div>
                     ))}

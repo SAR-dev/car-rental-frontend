@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import NavLayout from '../layouts/NavLayout'
 import { Collections, ReservationsResponse } from '../types/pocketbase';
 import { pb, usePocket } from '../contexts/PocketContext';
-import { formatDateToYYYYMMDD, formatTo12HourDateTime } from '../helpers';
+import { formatDateStringToYYYYMMDD, formatTo12HourDateTime } from '../helpers';
 import toast from 'react-hot-toast';
 
 interface UserUpdateData {
@@ -38,7 +38,7 @@ function Profile() {
             setUserData({
                 firstName: res.firstName,
                 lastName: res.lastName,
-                dateOfBirth: formatDateToYYYYMMDD(res.dateOfBirth),
+                dateOfBirth: formatDateStringToYYYYMMDD(res.dateOfBirth),
                 email: res.email,
                 driverLicenseNo: res.driverLicenseNo,
                 driverLicensePlace: res.driverLicensePlace,

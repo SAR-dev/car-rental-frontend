@@ -1,4 +1,3 @@
-import { formatDateToDMY } from "../helpers/date";
 import NavLayout from "../layouts/NavLayout";
 import useLocalStorage from "use-local-storage";
 import { AgenciesRecord, Collections, VehicleTypesRecord } from "../types/pocketbase";
@@ -6,15 +5,18 @@ import { constants } from "../constants";
 import { useEffect, useState } from "react";
 import { pb } from "../contexts/PocketContext";
 import { useNavigate } from "react-router";
+import { formatDateToYYYYMMDD, generateTimeList } from "../helpers";
+
+const timeList = generateTimeList(constants.TIME_RANGE.MIN, constants.TIME_RANGE.MAX)
 
 function Home() {
     const navigate = useNavigate()
     const [formData, setFormData] = useState({
         vehicleTypeId: "",
         agencyId: "",
-        startDate: formatDateToDMY(new Date(new Date().setDate(new Date().getDate() + 1))),
+        startDate: formatDateToYYYYMMDD(new Date(new Date().setDate(new Date().getDate() + 1))),
         startTime: "09:00",
-        endDate: formatDateToDMY(new Date(new Date().setDate(new Date().getDate() + 2))),
+        endDate: formatDateToYYYYMMDD(new Date(new Date().setDate(new Date().getDate() + 2))),
         endTime: "09:00",
     })
 
@@ -67,15 +69,15 @@ function Home() {
                                 }
                                 className="input"
                             />
-                            <input
-                                type="time"
+                            <select
                                 value={formData.startTime}
-                                onChange={e =>
-                                    constants.TIME_FORMAT.test(e.target.value) &&
-                                    setFormData({ ...formData, startTime: e.target.value })
-                                }
-                                className="input"
-                            />
+                                onChange={e => setFormData({ ...formData, startTime: e.target.value })}
+                                className="select"
+                            >
+                                {timeList.map(e => (
+                                    <option key={e} value={e}>{e}</option>
+                                ))}
+                            </select>
                         </div>
                         <div className="grid grid-cols-2 gap-5">
                             <input
@@ -87,15 +89,15 @@ function Home() {
                                 }
                                 className="input"
                             />
-                            <input
-                                type="time"
+                            <select
                                 value={formData.endTime}
-                                onChange={e =>
-                                    constants.TIME_FORMAT.test(e.target.value) &&
-                                    setFormData({ ...formData, endTime: e.target.value })
-                                }
-                                className="input"
-                            />
+                                onChange={e => setFormData({ ...formData, endTime: e.target.value })}
+                                className="select"
+                            >
+                                {timeList.map(e => (
+                                    <option key={e} value={e}>{e}</option>
+                                ))}
+                            </select>
                         </div>
                         <button className="btn" onClick={handleSearch}>Search</button>
                     </div>

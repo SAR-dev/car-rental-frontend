@@ -12,7 +12,7 @@ import { pb } from '../contexts/PocketContext';
 import { Collections, VehiclePackagesResponse } from '../types/pocketbase';
 import NotFoundError from '../components/NotFoundError';
 import DataFetchError from '../components/DataFetchError';
-import { countDaysBetweenDates, formatPrice, uppercaseToCapitalize } from '../helpers';
+import { countDaysBetweenDates, formatPrice, generateTimeList, uppercaseToCapitalize } from '../helpers';
 import { TexpandVehicleDetailsResType } from '../types/result';
 import { Img } from 'react-image';
 import { constants } from '../constants';
@@ -27,6 +27,8 @@ interface FormData {
     vehiclePackageId: string
     vehicleOptionIds: string[]
 }
+
+const timeList = generateTimeList(constants.TIME_RANGE.MIN, constants.TIME_RANGE.MAX)
 
 function BookingDetails() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -178,19 +180,19 @@ function BookingDetails() {
                         <div className='font-semibold bg-base-content text-base-100 py-2 px-4 rounded w-fit -my-2'>{data.model}</div>
                         <div className="flex gap-5 w-fit">
                             <div className="flex flex-col items-center gap-1">
-                                <BsGear className="size-8 text-accent" />
+                                <BsGear className="size-8" />
                                 <div className="text-sm">{uppercaseToCapitalize(data.transmissionType)}</div>
                             </div>
                             <div className="flex flex-col items-center gap-1">
-                                <GiOilySpiral className="size-8 text-accent" />
+                                <GiOilySpiral className="size-8" />
                                 <div className="text-sm">{uppercaseToCapitalize(data.fuelType)}</div>
                             </div>
                             <div className="flex flex-col items-center gap-1">
-                                <BsDoorOpen className="size-8 text-accent" />
+                                <BsDoorOpen className="size-8" />
                                 <div className="text-sm">{data.noOfDoors} Doors</div>
                             </div>
                             <div className="flex flex-col items-center gap-1">
-                                <BsPersonLinesFill className="size-8 text-accent" />
+                                <BsPersonLinesFill className="size-8" />
                                 <div className="text-sm">{data.noOfSeats} Persons</div>
                             </div>
                         </div>
@@ -233,10 +235,10 @@ function BookingDetails() {
                                                 />
                                                 <div className="flex flex-col gap-1">
                                                     <div className="flex">
-                                                        <span className='font-semibold'>{pac.title}</span><span className='mx-1'>:</span><span>{pac.minKmLimit} kilometers package</span><span className='ml-1 font-bold text-primary'>CHF {pac.basePrice}.-</span>
+                                                        <span className='font-semibold'>{pac.title}</span><span className='mx-1'>:</span><span>{pac.minKmLimit} kilometers package</span><span className='ml-1 font-bold text-purple-600'>CHF {pac.basePrice}.-</span>
                                                     </div>
                                                     <div className="flex text-sm opacity-80">
-                                                        <span>Price per additional km: </span><span className='ml-1 font-bold text-primary'>CHF {pac.pricePerExtraKm}/km</span>
+                                                        <span>Price per additional km: </span><span className='ml-1 font-bold text-purple-600'>CHF {pac.pricePerExtraKm}/km</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -264,7 +266,7 @@ function BookingDetails() {
                                                         <div>
                                                             {option.title}
                                                         </div>
-                                                        <div className='font-bold text-primary'>
+                                                        <div className='font-bold text-purple-600'>
                                                             CHF {option.price}
                                                         </div>
                                                     </div>
@@ -339,16 +341,18 @@ function BookingDetails() {
                                             </fieldset>
                                             <fieldset className="fieldset">
                                                 <legend className="fieldset-legend">Start Time</legend>
-                                                <input
-                                                    type="time"
+                                                <select
                                                     value={formData.startTime}
                                                     onChange={e => {
-                                                        if (!constants.TIME_FORMAT.test(e.target.value)) return;
                                                         searchParams.set(constants.SEARCH_PARAMS.START_TIME, e.target.value)
                                                         setSearchParams(searchParams)
                                                     }}
-                                                    className="input"
-                                                />
+                                                    className="select"
+                                                >
+                                                    {timeList.map(e => (
+                                                        <option key={e} value={e}>{e}</option>
+                                                    ))}
+                                                </select>
                                             </fieldset>
                                         </div>
                                         <div className="grid grid-cols-2 gap-5">
@@ -367,16 +371,18 @@ function BookingDetails() {
                                             </fieldset>
                                             <fieldset className="fieldset">
                                                 <legend className="fieldset-legend">End Time</legend>
-                                                <input
-                                                    type="time"
+                                                <select
                                                     value={formData.endTime}
                                                     onChange={e => {
-                                                        if (!constants.TIME_FORMAT.test(e.target.value)) return;
                                                         searchParams.set(constants.SEARCH_PARAMS.END_TIME, e.target.value)
                                                         setSearchParams(searchParams)
                                                     }}
-                                                    className="input"
-                                                />
+                                                    className="select"
+                                                >
+                                                    {timeList.map(e => (
+                                                        <option key={e} value={e}>{e}</option>
+                                                    ))}
+                                                </select>
                                             </fieldset>
                                         </div>
                                         <div className="text-info text-sm font-semibold">
@@ -432,7 +438,7 @@ function BookingDetails() {
                                     </tr>
 
                                 ))}
-                                <tr className='text-primary'>
+                                <tr className='text-purple-600'>
                                     <th></th>
                                     <th>Daily Payment</th>
                                     <th>CHF {formatPrice(payments.map(e => e.price).reduce((partialSum, a) => partialSum + a, 0))}</th>
@@ -442,7 +448,7 @@ function BookingDetails() {
                                     <th>No of Days</th>
                                     <th>{countDaysBetweenDates(formData.startDate, formData.endDate)}</th>
                                 </tr>
-                                <tr className='text-primary'>
+                                <tr className='text-purple-600'>
                                     <th></th>
                                     <th>Total Payment</th>
                                     <th>CHF {formatPrice(payments.map(e => e.price).reduce((partialSum, a) => partialSum + a, 0) * countDaysBetweenDates(formData.startDate, formData.endDate))}</th>

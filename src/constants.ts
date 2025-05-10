@@ -19,5 +19,9 @@ export const constants = {
         VEHICLE_OPTION_IDS: "vehicleOptionIds",
         NEXT: "next"
     },
-    CART_STORE_KEY: "cart"
+    CART_STORE_KEY: "cart",
+    TIME_RANGE: {
+        MIN: "09:00",
+        MAX: "21:00"
+    }
 }
