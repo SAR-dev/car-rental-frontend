@@ -1,4 +1,4 @@
-import { AgenciesResponse, FeaturesResponse, ImagesResponse, ProductsResponse, VehicleOptionsResponse, VehiclesResponse } from "./pocketbase";
+import { AgenciesResponse, FeaturesResponse, ImagesResponse, ProductsResponse, VehicleOptionsResponse, VehiclePackagesResponse, VehiclesResponse } from "./pocketbase";
 
 export interface VehicleList {
     id: string
@@ -27,6 +27,7 @@ export type TexpandVehicleDetailsResType = VehiclesResponse & {
         featuresExcluded: FeaturesResponse[]
         agencies: AgenciesResponse[]
         vehicleOptions: VehicleOptionsResponse[]
+        vehiclePackages: VehiclePackagesResponse[]
     };
 };
 
@@ -40,5 +41,6 @@ export type TexpandVehicleDetailsShortResType = VehiclesResponse & {
     expand: {
         agencies: AgenciesResponse[]
         vehicleOptions: VehicleOptionsResponse[]
+        vehiclePackages: VehiclePackagesResponse[]
     };
 };

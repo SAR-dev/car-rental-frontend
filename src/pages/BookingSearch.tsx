@@ -28,6 +28,7 @@ const timeList = generateTimeList(constants.TIME_RANGE.MIN, constants.TIME_RANGE
 
 function BookingSearch() {
     const [searchParams, setSearchParams] = useSearchParams();
+    const [loaded, setLoaded] = useState(false)
 
     const [formData, setFormData] = useState<FormData>({
         vehicleTypeId: "",
@@ -64,6 +65,7 @@ function BookingSearch() {
                 }
             })
             .then(res => setVehicles(res.data.vehicleList as unknown as VehicleList[]))
+            .then(() => setLoaded(true))
     }, [formData])
 
 
@@ -291,7 +293,7 @@ function BookingSearch() {
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 w-full">
                             {vehicles.map((data, i) => <VehicleCard data={data} key={i} />)}
                         </div>
-                        {vehicles.length == 0 && (
+                        {vehicles.length == 0 && loaded && (
                             <div className='w-full h-20 flex justify-center items-center rounded border border-base-content/15 bg-base-200'>
                                 ¯\_(ツ)_/¯ No cars found ¯\_(ツ)_/¯
                             </div>

@@ -20,7 +20,7 @@ function VehicleCard({ data }: { data: VehicleList }) {
                     {data.model}
                 </div>
                 <div className="flex gap-1 items-end text-primary-content">
-                    From <span className='text-4xl font-semibold'>CHF {data.minPrice}</span>/day
+                    From <span className='text-4xl font-semibold'>CHF {data.minPrice}</span>
                 </div>
                 <div className="h-64">
                     <Img 

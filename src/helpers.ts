@@ -69,6 +69,36 @@ export function countDaysBetweenDates(startDate: string, endDate: string): numbe
   return dayDiff;
 }
 
+type DateTimeInput = {
+  startDate: string; // format: yyyy-mm-dd
+  startTime?: string; // optional, format: hh:mm
+  endDate: string;    // format: yyyy-mm-dd
+  endTime?: string;   // optional, format: hh:mm
+};
+
+export function countDifferenceBetweenDateTime(input: DateTimeInput): { days: number; hours: number } {
+  const { startDate, startTime = '00:00', endDate, endTime = '00:00' } = input;
+
+  // Combine date and time safely into ISO format
+  const startDateTime = `${startDate}T${startTime}:00`;
+  const endDateTime = `${endDate}T${endTime}:00`;
+
+  const start = new Date(startDateTime);
+  const end = new Date(endDateTime);
+
+  if (isNaN(start.getTime()) || isNaN(end.getTime())) return { days: 0, hours: 0 };
+
+  const diffMs = end.getTime() - start.getTime();
+
+  const rawDays = diffMs / (1000 * 60 * 60 * 24);
+  const rawHours = diffMs / (1000 * 60 * 60);
+
+  const days = Math.ceil(rawDays);
+  const hours = Math.ceil(rawHours);
+
+  return { days, hours };
+}
+
 export const formatDateToShortString = (dateInput: string) => {
   const date = new Date(dateInput);
   const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'short', year: 'numeric' };

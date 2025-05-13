@@ -3,18 +3,16 @@ import NavLayout from '../layouts/NavLayout'
 import { pb, usePocket } from '../contexts/PocketContext'
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router'
 import { ProductList, TexpandVehicleDetailsShortResType } from '../types/result';
-import { Collections, VehiclePackagesResponse } from '../types/pocketbase';
+import { Collections } from '../types/pocketbase';
 import { constants } from '../constants';
 import NotFoundError from '../components/NotFoundError';
 import DataFetchError from '../components/DataFetchError';
 import {
     api,
-    convertTo12Hour,
-    countDaysBetweenDates,
-    formatDateToShortString,
     formatDateStringToYYYYMMDD,
     formatPrice,
     formatToISOString,
+    countDifferenceBetweenDateTime,
 } from '../helpers';
 import CollapseForm from '../components/CollapseForm';
 import { useCartStore } from '../stores/cartStore';
@@ -116,11 +114,27 @@ function BookingReservation() {
     })
 
     const [data, setData] = useState<TexpandVehicleDetailsShortResType | null>(null)
-    const [packages, setPackages] = useState<VehiclePackagesResponse[]>([])
     const [notFound, setNotFound] = useState(false)
     const [fetchError, setFetchError] = useState(false)
 
-    const pac = useMemo(() => packages.find(e => e.id == formData.vehiclePackageId), [formData, packages]);
+    const selectedVehiclePackage = useMemo(() => data?.expand.vehiclePackages.find(e => e.id == formData.vehiclePackageId), [formData, data]);
+    const selectedOptions = useMemo(() => data?.expand.vehicleOptions.filter(e => formData.vehicleOptionIds.includes(e.id)) ?? [], [formData, data]);
+
+    const calculateVhiclePackagePrice = (timeUnit: string, unitPrice: number) => {
+        if (timeUnit == 'HOUR') return countDifferenceBetweenDateTime({
+            startDate: formData.startDate,
+            startTime: formData.startTime,
+            endDate: formData.endDate,
+            endTime: formData.endTime
+        }).hours * unitPrice
+        if (timeUnit == 'DAY') return countDifferenceBetweenDateTime({
+            startDate: formData.startDate,
+            startTime: formData.startTime,
+            endDate: formData.endDate,
+            endTime: formData.endTime
+        }).days * unitPrice
+        return 0;
+    }
 
     useEffect(() => {
         if (!!user) return;
@@ -150,7 +164,7 @@ function BookingReservation() {
         pb
             .collection(Collections.Vehicles)
             .getOne(id, {
-                expand: "agencies, vehicleOptions"
+                expand: "agencies, vehicleOptions, vehiclePackages"
             })
             .then(res => {
                 setData(res as unknown as TexpandVehicleDetailsShortResType)
@@ -163,12 +177,6 @@ function BookingReservation() {
                 setFetchError(err.status != 0)
             })
             .finally(() => setIsloading(false))
-        pb
-            .collection(Collections.VehiclePackages)
-            .getList(1, 50, {
-                filter: `vehicle = '${id}'`
-            })
-            .then(res => setPackages(res.items))
     }, [id])
 
     useEffect(() => {
@@ -247,22 +255,25 @@ function BookingReservation() {
             <div className='py-16 px-10 container mx-auto'>
                 <div className="p-5 rounded border border-base-200 shadow grid grid-cols-1 gap-5">
                     <CollapseForm title='Vehicle Rent Details' titleClass='text-2xl poppins-bold' defaultOpen>
-                        <table className="table border border-base-200">
+                        <table className="table border border-slate-300">
                             <tbody>
                                 <tr>
                                     <th>Vehicle</th>
                                     <td>{data.title}, ({data.model})</td>
                                 </tr>
                                 <tr>
-                                    <th>Kilometer Package</th>
+                                    <th>Vehicle Package</th>
                                     <td>
-                                        {pac && (
+                                        {selectedVehiclePackage && (
                                             <div className="flex flex-col gap-1">
-                                                <div className="flex">
-                                                    <span className='font-semibold'>{pac.title}</span><span className='mx-1'>:</span><span>{pac.minKmLimit} kilometers package</span><span className='ml-1 font-bold text-primary'>CHF {pac.basePrice}.-</span>
+                                                <div className="flex gap-2">
+                                                    <div>
+                                                        <span className='font-semibold'>{selectedVehiclePackage.title}</span><span className='mx-1'>:</span><span>{selectedVehiclePackage.maxDistanceKm} km package</span>
+                                                    </div>
+                                                    <div><span className='ml-1 font-bold text-primary bg-black px-2'>CHF {selectedVehiclePackage.pricePerTimeUnit}/ {selectedVehiclePackage.timeUnit.toLowerCase()}</span></div>
                                                 </div>
                                                 <div className="flex text-sm opacity-80">
-                                                    <span>Price per additional km: </span><span className='ml-1 font-bold text-primary'>CHF {pac.pricePerExtraKm}/km</span>
+                                                    <span>Price per additional km: </span><span className='ml-1'>CHF {selectedVehiclePackage.pricePerExtraKm}/km</span>
                                                 </div>
                                             </div>
                                         )}
@@ -278,8 +289,8 @@ function BookingReservation() {
                                                         <div>
                                                             {option.title}
                                                         </div>
-                                                        <div className='font-bold text-primary'>
-                                                            CHF {option.price}
+                                                        <div className='font-bold text-primary bg-black px-2'>
+                                                            CHF {option.price}/ day
                                                         </div>
                                                     </div>
                                                     <div className="flex text-sm opacity-80">
@@ -290,21 +301,84 @@ function BookingReservation() {
                                         </div>
                                     </td>
                                 </tr>
+                            </tbody>
+                        </table>
+                        <table className="table border border-slate-300 mt-5">
+                            <tbody>
                                 <tr>
                                     <th>Agency</th>
-                                    <td>{data.expand.agencies.find(e => e.id == formData.agencyId)?.name}</td>
+                                    <td>{data.expand.agencies.find(e => e.id == formData.agencyId)?.name || "N/A"}</td>
                                 </tr>
                                 <tr>
-                                    <th>Reserve from</th>
-                                    <td>{formatDateToShortString(formData.startDate)} {convertTo12Hour(formData.startTime)}</td>
+                                    <th>Start At</th>
+                                    <td>{formData.startDate} {formData.startTime}</td>
                                 </tr>
                                 <tr>
-                                    <th>Reserve till</th>
-                                    <td>{formatDateToShortString(formData.endDate)} {convertTo12Hour(formData.endTime)}</td>
+                                    <th>End At</th>
+                                    <td>{formData.endDate} {formData.endTime}</td>
                                 </tr>
                                 <tr>
                                     <th>No of Days</th>
-                                    <td>{countDaysBetweenDates(formData.startDate, formData.endDate)} Days</td>
+                                    <td>{countDifferenceBetweenDateTime({
+                                        startDate: formData.startDate,
+                                        startTime: formData.startTime,
+                                        endDate: formData.endDate,
+                                        endTime: formData.endTime
+                                    }).days} Days</td>
+                                </tr>
+                                <tr>
+                                    <th>No of Hours</th>
+                                    <td>{countDifferenceBetweenDateTime({
+                                        startDate: formData.startDate,
+                                        startTime: formData.startTime,
+                                        endDate: formData.endDate,
+                                        endTime: formData.endTime
+                                    }).hours} Hours</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table className="table border border-slate-300 mt-5">
+                            <tbody>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Unit Price</th>
+                                    <th>Unit Time</th>
+                                    <th>Total Price</th>
+                                </tr>
+                                {selectedVehiclePackage && (
+                                    <tr>
+                                        <td>Vehicle Package: {selectedVehiclePackage.title}</td>
+                                        <td>CHF {selectedVehiclePackage.pricePerTimeUnit}</td>
+                                        <td>{selectedVehiclePackage.timeUnit}</td>
+                                        <td>CHF {calculateVhiclePackagePrice(selectedVehiclePackage.timeUnit, selectedVehiclePackage.pricePerTimeUnit)}</td>
+                                    </tr>
+                                )}
+                                {selectedOptions.map((e, i) => (
+                                    <tr key={i}>
+                                        <td>Additional: {e.title}</td>
+                                        <td>CHF {e.price}</td>
+                                        <td>DAY</td>
+                                        <td>CHF {e.price * countDifferenceBetweenDateTime({
+                                            startDate: formData.startDate,
+                                            startTime: formData.startTime,
+                                            endDate: formData.endDate,
+                                            endTime: formData.endTime
+                                        }).days}</td>
+                                    </tr>
+                                ))}
+                                <tr>
+                                    <th>Total Price</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th>CHF {formatPrice(
+                                        selectedVehiclePackage ? calculateVhiclePackagePrice(selectedVehiclePackage.timeUnit, selectedVehiclePackage.pricePerTimeUnit) : 0 +
+                                            ((selectedOptions.map(e => e.price).reduce((partialSum, a) => partialSum + a, 0)) * countDifferenceBetweenDateTime({
+                                                startDate: formData.startDate,
+                                                startTime: formData.startTime,
+                                                endDate: formData.endDate,
+                                                endTime: formData.endTime
+                                            }).days)
+                                    )}</th>
                                 </tr>
                             </tbody>
                         </table>

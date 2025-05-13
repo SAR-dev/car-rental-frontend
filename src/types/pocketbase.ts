@@ -132,17 +132,37 @@ export enum ReservationsStatusOptions {
 	"CONFIRMED" = "CONFIRMED",
 }
 export type ReservationsRecord = {
+	address?: string
+	addressSec?: string
 	agency?: RecordIdString
+	contactNo?: string
+	contactNoSec?: string
 	created?: IsoDateString
+	dateOfBirth?: IsoDateString
+	dateOfBirthSec?: IsoDateString
+	depositMethod?: string
+	driverLicenseNo?: string
+	driverLicenseNoSec?: string
+	driverLicensePlace?: string
+	driverLicensePlaceSec?: string
+	email?: string
+	emailSec?: string
 	endAt?: IsoDateString
+	firstName?: string
+	firstNameSec?: string
 	id: string
-	price?: number
+	lastName?: string
+	lastNameSec?: string
+	postCode?: string
+	postCodeSec?: string
 	products?: RecordIdString[]
 	startAt?: IsoDateString
 	status?: ReservationsStatusOptions
 	updated?: IsoDateString
 	user?: RecordIdString
 	vehicle?: RecordIdString
+	vehicleOptions?: RecordIdString[]
+	vehiclePackages?: RecordIdString
 }
 
 export type UsersRecord = {
@@ -174,15 +194,19 @@ export type VehicleOptionsRecord = {
 	updated?: IsoDateString
 }
 
+export enum VehiclePackagesTimeUnitOptions {
+	"HOUR" = "HOUR",
+	"DAY" = "DAY",
+}
 export type VehiclePackagesRecord = {
-	basePrice?: number
 	created?: IsoDateString
 	id: string
-	minKmLimit?: number
+	maxDistanceKm: number
 	pricePerExtraKm?: number
+	pricePerTimeUnit: number
+	timeUnit: VehiclePackagesTimeUnitOptions
 	title?: string
 	updated?: IsoDateString
-	vehicle: RecordIdString
 }
 
 export type VehicleTypesRecord = {
@@ -229,6 +253,7 @@ export type VehiclesRecord = {
 	transmissionType?: VehiclesTransmissionTypeOptions
 	updated?: IsoDateString
 	vehicleOptions?: RecordIdString[]
+	vehiclePackages: RecordIdString[]
 	vehicleTypes?: RecordIdString[]
 }
 

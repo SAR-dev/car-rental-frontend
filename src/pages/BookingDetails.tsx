@@ -9,10 +9,15 @@ import { FaCheckCircle } from "react-icons/fa";
 import { MdError } from "react-icons/md";
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
 import { pb } from '../contexts/PocketContext';
-import { Collections, VehiclePackagesResponse } from '../types/pocketbase';
+import { Collections } from '../types/pocketbase';
 import NotFoundError from '../components/NotFoundError';
 import DataFetchError from '../components/DataFetchError';
-import { countDaysBetweenDates, formatPrice, generateTimeList, uppercaseToCapitalize } from '../helpers';
+import {
+    countDifferenceBetweenDateTime,
+    formatPrice,
+    generateTimeList,
+    uppercaseToCapitalize,
+} from '../helpers';
 import { TexpandVehicleDetailsResType } from '../types/result';
 import { Img } from 'react-image';
 import { constants } from '../constants';
@@ -48,7 +53,6 @@ function BookingDetails() {
     });
 
     const [data, setData] = useState<TexpandVehicleDetailsResType | null>(null)
-    const [packages, setPackages] = useState<VehiclePackagesResponse[]>([])
     const [notFound, setNotFound] = useState(false)
     const [fetchError, setFetchError] = useState(false)
 
@@ -65,21 +69,15 @@ function BookingDetails() {
         [formData]
     );
 
-    const payments = useMemo(
-        () => [...(packages.filter(e => e.id == formData.vehiclePackageId)?.map(e => {
-            return { type: "Kilometer Package", title: e.title, price: e.basePrice }
-        }) || []), ...(data?.expand.vehicleOptions.filter(e => formData.vehicleOptionIds.includes(e.id))?.map(e => {
-            return { type: "Additional Options", title: e.title, price: e.price }
-        }) || [])],
-        [formData, packages, data]
-    );
+    const selectedVehiclePackage = useMemo(() => data?.expand.vehiclePackages.find(e => e.id == formData.vehiclePackageId), [formData, data]);
+    const selectedOptions = useMemo(() => data?.expand.vehicleOptions.filter(e => formData.vehicleOptionIds.includes(e.id)) ?? [], [formData, data]);
 
     useEffect(() => {
         if (!id || id.length == 0) return;
         pb
             .collection(Collections.Vehicles)
             .getOne(id, {
-                expand: "images, featuresIncluded, featuresExcluded, agencies, vehicleOptions"
+                expand: "images, featuresIncluded, featuresExcluded, agencies, vehicleOptions, vehiclePackages"
             })
             .then(res => {
                 setData(res as unknown as TexpandVehicleDetailsResType)
@@ -92,12 +90,6 @@ function BookingDetails() {
                 setFetchError(err.status != 0)
             })
             .finally(() => setIsloading(false))
-        pb
-            .collection(Collections.VehiclePackages)
-            .getList(1, 50, {
-                filter: `vehicle = '${id}'`
-            })
-            .then(res => setPackages(res.items))
     }, [id])
 
     useEffect(() => {
@@ -112,6 +104,22 @@ function BookingDetails() {
             vehicleOptionIds: [...new Set((searchParams.get(constants.SEARCH_PARAMS.VEHICLE_OPTION_IDS) || "").split(",").filter(e => e.length > 0))],
         });
     }, [searchParams]);
+
+    const calculateVhiclePackagePrice = (timeUnit: string, unitPrice: number) => {
+        if (timeUnit == 'HOUR') return countDifferenceBetweenDateTime({
+            startDate: formData.startDate,
+            startTime: formData.startTime,
+            endDate: formData.endDate,
+            endTime: formData.endTime
+        }).hours * unitPrice
+        if (timeUnit == 'DAY') return countDifferenceBetweenDateTime({
+            startDate: formData.startDate,
+            startTime: formData.startTime,
+            endDate: formData.endDate,
+            endTime: formData.endTime
+        }).days * unitPrice
+        return 0;
+    }
 
     const handleVehicleOption = (vehicleOptionId: string) => {
         const list = (searchParams.get(constants.SEARCH_PARAMS.VEHICLE_OPTION_IDS) || "").split(",").filter(e => e.length > 0)
@@ -222,7 +230,7 @@ function BookingDetails() {
                             <div className="p-5">
                                 <CollapseForm title='Kilometer package' titleClass='text-xl' defaultOpen>
                                     <div className="flex flex-col gap-3">
-                                        {packages.map((pac, i) => (
+                                        {data.expand.vehiclePackages.map((pac, i) => (
                                             <div className='flex gap-3' key={i}>
                                                 <input
                                                     type="radio"
@@ -235,10 +243,10 @@ function BookingDetails() {
                                                 />
                                                 <div className="flex flex-col gap-1">
                                                     <div className="flex">
-                                                        <span className='font-semibold'>{pac.title}</span><span className='mx-1'>:</span><span>{pac.minKmLimit} kilometers package</span><span className='ml-1 font-bold text-purple-600'>CHF {pac.basePrice}.-</span>
+                                                        <span className='font-semibold'>{pac.title}</span><span className='mx-1'>:</span><span>{pac.maxDistanceKm} km package</span><span className='ml-1 font-bold text-primary bg-black px-2'>CHF {pac.pricePerTimeUnit}/ {pac.timeUnit.toLowerCase()}</span>
                                                     </div>
                                                     <div className="flex text-sm opacity-80">
-                                                        <span>Price per additional km: </span><span className='ml-1 font-bold text-purple-600'>CHF {pac.pricePerExtraKm}/km</span>
+                                                        <span>Price per additional km: </span><span className='ml-1'>CHF {pac.pricePerExtraKm}/km</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -266,8 +274,8 @@ function BookingDetails() {
                                                         <div>
                                                             {option.title}
                                                         </div>
-                                                        <div className='font-bold text-purple-600'>
-                                                            CHF {option.price}
+                                                        <div className='font-bold text-primary bg-black px-2'>
+                                                            CHF {option.price}/ day
                                                         </div>
                                                     </div>
                                                     <div className="flex text-sm opacity-80">
@@ -397,7 +405,15 @@ function BookingDetails() {
                                     <div className="text-xl font-semibold uppercase opacity-70">
                                         Amount To Pay
                                     </div>
-                                    <div className="text-xl font-bold">CHF {enableRentNow ? formatPrice(payments.map(e => e.price).reduce((partialSum, a) => partialSum + a, 0) * countDaysBetweenDates(formData.startDate, formData.endDate)) : 0}</div>
+                                    <div className="text-xl font-bold">CHF {enableRentNow ? formatPrice(
+                                        selectedVehiclePackage ? calculateVhiclePackagePrice(selectedVehiclePackage.timeUnit, selectedVehiclePackage.pricePerTimeUnit) : 0 +
+                                            ((selectedOptions.map(e => e.price).reduce((partialSum, a) => partialSum + a, 0)) * countDifferenceBetweenDateTime({
+                                                startDate: formData.startDate,
+                                                startTime: formData.startTime,
+                                                endDate: formData.endDate,
+                                                endTime: formData.endTime
+                                            }).days)
+                                    ) : 0}</div>
                                 </div>
                                 <div className="flex gap-5 justify-end">
                                     <button className="btn" onClick={() => navigate(-1)}>Cancel</button>
@@ -412,7 +428,7 @@ function BookingDetails() {
                 <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-base-300/50">
                     <DialogPanel className="max-w-xl space-y-4 border border-base-300 bg-base-100 shadow p-10">
                         <DialogTitle className="font-bold poppins-bold">Review Selected Options</DialogTitle>
-                        <table className="table border border-base-200 mt-5">
+                        <table className="table border border-slate-300 mt-5">
                             <tbody>
                                 <tr>
                                     <th>Agency</th>
@@ -426,32 +442,68 @@ function BookingDetails() {
                                     <th>End At</th>
                                     <td>{formData.endDate} {formData.endTime}</td>
                                 </tr>
-                            </tbody>
-                        </table>
-                        <table className="table border border-base-200 mt-5">
-                            <tbody>
-                                {payments.map((e, i) => (
-                                    <tr key={i}>
-                                        <th>{e.type}</th>
-                                        <td>{e.title}</td>
-                                        <td>CHF {e.price}</td>
-                                    </tr>
-
-                                ))}
-                                <tr className='text-purple-600'>
-                                    <th></th>
-                                    <th>Daily Payment</th>
-                                    <th>CHF {formatPrice(payments.map(e => e.price).reduce((partialSum, a) => partialSum + a, 0))}</th>
+                                <tr>
+                                    <th>No of Days</th>
+                                    <td>{countDifferenceBetweenDateTime({
+                                        startDate: formData.startDate,
+                                        startTime: formData.startTime,
+                                        endDate: formData.endDate,
+                                        endTime: formData.endTime
+                                    }).days} Days</td>
                                 </tr>
                                 <tr>
-                                    <th></th>
-                                    <th>No of Days</th>
-                                    <th>{countDaysBetweenDates(formData.startDate, formData.endDate)}</th>
+                                    <th>No of Hours</th>
+                                    <td>{countDifferenceBetweenDateTime({
+                                        startDate: formData.startDate,
+                                        startTime: formData.startTime,
+                                        endDate: formData.endDate,
+                                        endTime: formData.endTime
+                                    }).hours} Hours</td>
                                 </tr>
-                                <tr className='text-purple-600'>
+                            </tbody>
+                        </table>
+                        <table className="table border border-slate-300 mt-5">
+                            <tbody>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Unit Price</th>
+                                    <th>Unit Time</th>
+                                    <th>Total Price</th>
+                                </tr>
+                                {selectedVehiclePackage && (
+                                    <tr>
+                                        <td>Vehicle Package: {selectedVehiclePackage.title}</td>
+                                        <td>CHF {selectedVehiclePackage.pricePerTimeUnit}</td>
+                                        <td>{selectedVehiclePackage.timeUnit}</td>
+                                        <td>CHF {calculateVhiclePackagePrice(selectedVehiclePackage.timeUnit, selectedVehiclePackage.pricePerTimeUnit)}</td>
+                                    </tr>
+                                )}
+                                {selectedOptions.map((e, i) => (
+                                    <tr key={i}>
+                                        <td>Additional: {e.title}</td>
+                                        <td>CHF {e.price}</td>
+                                        <td>DAY</td>
+                                        <td>CHF {e.price * countDifferenceBetweenDateTime({
+                                            startDate: formData.startDate,
+                                            startTime: formData.startTime,
+                                            endDate: formData.endDate,
+                                            endTime: formData.endTime
+                                        }).days}</td>
+                                    </tr>
+                                ))}
+                                <tr>
+                                    <th>Total Price</th>
                                     <th></th>
-                                    <th>Total Payment</th>
-                                    <th>CHF {formatPrice(payments.map(e => e.price).reduce((partialSum, a) => partialSum + a, 0) * countDaysBetweenDates(formData.startDate, formData.endDate))}</th>
+                                    <th></th>
+                                    <th>CHF {formatPrice(
+                                        selectedVehiclePackage ? calculateVhiclePackagePrice(selectedVehiclePackage.timeUnit, selectedVehiclePackage.pricePerTimeUnit) : 0 +
+                                            ((selectedOptions.map(e => e.price).reduce((partialSum, a) => partialSum + a, 0)) * countDifferenceBetweenDateTime({
+                                                startDate: formData.startDate,
+                                                startTime: formData.startTime,
+                                                endDate: formData.endDate,
+                                                endTime: formData.endTime
+                                            }).days)
+                                    )}</th>
                                 </tr>
                             </tbody>
                         </table>
