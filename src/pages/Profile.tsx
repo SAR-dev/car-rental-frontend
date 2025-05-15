@@ -66,18 +66,18 @@ function Profile() {
     return (
         <NavLayout>
             <div className='py-16 px-10 max-w-6xl mx-auto'>
-                <div className="text-3xl font-semibold poppins-bold">Profile</div>
+                <div className="text-3xl font-semibold poppins-bold">Profil</div>
                 <div className="grid grid-cols-3 gap-5 my-10">
                     <fieldset className="fieldset col-span-3 lg:col-span-1">
-                        <legend className="fieldset-legend">First Name</legend>
+                        <legend className="fieldset-legend">Prénom</legend>
                         <input type="text" className="input w-full" value={userData.firstName} onChange={e => setUserData({ ...userData, firstName: e.target.value })} />
                     </fieldset>
                     <fieldset className="fieldset col-span-3 lg:col-span-1">
-                        <legend className="fieldset-legend">Last Name</legend>
+                        <legend className="fieldset-legend">Nom de famille</legend>
                         <input type="text" className="input w-full" value={userData.lastName} onChange={e => setUserData({ ...userData, lastName: e.target.value })} />
                     </fieldset>
                     <fieldset className="fieldset col-span-3 lg:col-span-1">
-                        <legend className="fieldset-legend">Date of birth</legend>
+                        <legend className="fieldset-legend">Date de naissance</legend>
                         <input type="date" className="input w-full" value={userData.dateOfBirth} onChange={e => setUserData({ ...userData, dateOfBirth: e.target.value })} />
                     </fieldset>
                     <fieldset className="fieldset col-span-3 lg:col-span-1">
@@ -85,11 +85,11 @@ function Profile() {
                         <input type="text" className="input w-full" value={userData.email} onChange={e => setUserData({ ...userData, email: e.target.value })} />
                     </fieldset>
                     <fieldset className="fieldset col-span-3 lg:col-span-1">
-                        <legend className="fieldset-legend">Driver Licence No</legend>
+                        <legend className="fieldset-legend">Numéro de permis de conduire</legend>
                         <input type="text" className="input w-full" value={userData.driverLicenseNo} onChange={e => setUserData({ ...userData, driverLicenseNo: e.target.value })} />
                     </fieldset>
                     <fieldset className="fieldset col-span-3 lg:col-span-1">
-                        <legend className="fieldset-legend">Issue place of the license</legend>
+                        <legend className="fieldset-legend">Lieu de délivrance du permis</legend>
                         <input type="text" className="input w-full" value={userData.driverLicensePlace} onChange={e => setUserData({ ...userData, driverLicensePlace: e.target.value })} />
                     </fieldset>
                     <fieldset className="fieldset col-span-3 lg:col-span-1">
@@ -97,13 +97,13 @@ function Profile() {
                         <input type="text" className="input w-full" value={userData.postCode} onChange={e => setUserData({ ...userData, postCode: e.target.value })} />
                     </fieldset>
                     <fieldset className="col-span-3 lg:col-span-2 fieldset">
-                        <legend className="fieldset-legend">Address</legend>
+                        <legend className="fieldset-legend">Adresse</legend>
                         <input type="text" className="input w-full" value={userData.address} onChange={e => setUserData({ ...userData, address: e.target.value })} />
                     </fieldset>
-                    <button className="btn btn-primary" onClick={updateProfile}>Update Profile</button>
+                    <button className="btn btn-primary" onClick={updateProfile}>Mettre à jour le profil</button>
                 </div>
                 <div className="mt-16">
-                    <div className="text-3xl font-semibold poppins-bold">Reservation History</div>
+                    <div className="text-3xl font-semibold poppins-bold">Historique des réservations</div>
                     <div className="grid grid-cols-1 gap-5 my-10">
                         {reservations.map((e, i) => (
                             <div className="rounded border border-base-300" key={i}>

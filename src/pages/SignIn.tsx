@@ -40,7 +40,7 @@ function SignIn() {
             return;
         }
         if(formData.dateOfBirth.length == 0 || !isValidDate(formData.dateOfBirth)){
-            alert("Provide correct date of birth")
+            alert("Provide correct Date de naissance")
             return;
         }
 
@@ -78,15 +78,15 @@ function SignIn() {
             <div className="h-full w-full flex justify-center items-center">
                 <div className="w-96 p-5 rounded border border-base-200 shadow my-10">
                     <div className="text-2xl font-bold text-center">
-                        Welcome !!!
+                        Bienvenue !!!
                     </div>
                     {isNewUser ? (
                         <div className="opacity-70 text-center text-sm">
-                            Already have an account ? Click to <button className='font-semibold text-primary opacity-100 btn-link cursor-pointer' onClick={toogleNewUser}>Sign In</button>
+                            Vous avez déjà un compte ? <button className='font-semibold text-yellow-600 opacity-100 btn-link cursor-pointer' onClick={toogleNewUser}>Se connecter</button>
                         </div>
                     ) : (
                         <div className="opacity-70 text-center text-sm">
-                            Don't have an account ? Click to <button className='font-semibold text-primary opacity-100 btn-link cursor-pointer' onClick={toogleNewUser}>Create Account</button>
+                            Vous n'avez pas de compte ? <button className='font-semibold text-yellow-600 opacity-100 btn-link cursor-pointer' onClick={toogleNewUser}>Créer un compte</button>
                         </div>
                     )}
                     <div className="flex flex-col gap-3 mt-5">
@@ -94,16 +94,16 @@ function SignIn() {
                             <>
                                 <div className="grid grid-cols-2 gap-5">
                                     <fieldset className="fieldset">
-                                        <legend className="fieldset-legend">First Name</legend>
+                                        <legend className="fieldset-legend">Prénom</legend>
                                         <input type="text" className="input w-full" placeholder='John' value={formData.firstName} onChange={e => setFormData({ ...formData, firstName: e.target.value })} />
                                     </fieldset>
                                     <fieldset className="fieldset">
-                                        <legend className="fieldset-legend">Last Name</legend>
+                                        <legend className="fieldset-legend">Nom de famille</legend>
                                         <input type="text" className="input w-full" placeholder='John' value={formData.lastName} onChange={e => setFormData({ ...formData, lastName: e.target.value })} />
                                     </fieldset>
                                 </div>
                                 <fieldset className="fieldset">
-                                    <legend className="fieldset-legend">Date of Birth</legend>
+                                    <legend className="fieldset-legend">Date de naissance</legend>
                                     <input type="date" className="input w-full" value={formData.dateOfBirth} onChange={e => setFormData({ ...formData, dateOfBirth: e.target.value })} />
                                 </fieldset>
                                 <fieldset className="fieldset">
@@ -121,9 +121,9 @@ function SignIn() {
                             <input type="password" className="input w-full" placeholder='*********' value={formData.password} onChange={e => setFormData({ ...formData, password: e.target.value })} />
                         </fieldset>
                         {isNewUser ? (
-                            <button className="btn w-full btn-primary" onClick={createAccount}>Create Account</button>
+                            <button className="btn w-full btn-primary" onClick={createAccount}>Créer un compte</button>
                         ) : (
-                            <button className="btn w-full btn-primary" onClick={signIn}>Sign In</button>
+                            <button className="btn w-full btn-primary" onClick={signIn}>Se connecter</button>
                         )}
                     </div>
                 </div>
@@ -136,11 +136,11 @@ function SignIn() {
             <Dialog open={!!error} onClose={() => setError(null)} className="relative z-50">
                 <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-base-300/50">
                     <DialogPanel className="max-w-xl space-y-4 border border-base-200 bg-base-100 p-10">
-                        <DialogTitle className="font-bold text-center text-error">Error Occured</DialogTitle>
+                        <DialogTitle className="font-bold text-center text-error">Une erreur s'est produite</DialogTitle>
                         <div className="bg-error/50 p-5 w-full rounded text-xs">
                             <pre>{JSON.stringify(error, null, 2)}</pre>
                         </div>
-                        <button className="btn w-full btn-primary mt-5" onClick={() => setError(null)}>Close</button>
+                        <button className="btn w-full btn-primary mt-5" onClick={() => setError(null)}>Fermer</button>
                     </DialogPanel>
                 </div>
             </Dialog>
@@ -149,9 +149,9 @@ function SignIn() {
                     <DialogPanel className="max-w-xl space-y-4 border border-base-200 bg-base-100 p-10">
                         <div className="w-96 flex justify-center items-center flex-col gap-3">
                             <div className='text-5xl'>🌞</div>
-                            <div>Account Created Successfully. Please sign in now</div>
+                            <div>Compte créé avec succès. Veuillez vous connecter.</div>
                         </div>
-                        <button className="btn w-full btn-primary mt-5" onClick={() => setAccountCreated(false)}>Close</button>
+                        <button className="btn w-full btn-primary mt-5" onClick={() => setAccountCreated(false)}>Fermer</button>
                     </DialogPanel>
                 </div>
             </Dialog>

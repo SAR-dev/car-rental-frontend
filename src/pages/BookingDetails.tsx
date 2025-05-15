@@ -197,30 +197,30 @@ function BookingDetails() {
                             </div>
                             <div className="flex flex-col items-center gap-1">
                                 <BsDoorOpen className="size-8" />
-                                <div className="text-sm">{data.noOfDoors} Doors</div>
+                                <div className="text-sm">{data.noOfDoors} Portes</div>
                             </div>
                             <div className="flex flex-col items-center gap-1">
                                 <BsPersonLinesFill className="size-8" />
-                                <div className="text-sm">{data.noOfSeats} Persons</div>
+                                <div className="text-sm">{data.noOfSeats} Personnes</div>
                             </div>
                         </div>
                         <div className="overflow-x-auto rounded-box border border-base-content/15 bg-base-100 w-full">
                             <table className="table">
                                 <tbody>
                                     <tr>
-                                        <th>Loading dimensions (L × W × H)</th>
+                                        <th>Dimensions de chargement (L × W × H)</th>
                                         <td>{data.loadDimensions}</td>
                                     </tr>
                                     <tr>
-                                        <th>Payload</th>
+                                        <th>Charge utile</th>
                                         <td>{data.payloadWeight}</td>
                                     </tr>
                                     <tr>
-                                        <th>External heigh</th>
+                                        <th>Hauteur extérieure</th>
                                         <td>{data.externalHeight}</td>
                                     </tr>
                                     <tr>
-                                        <th>License type</th>
+                                        <th>Type de licence</th>
                                         <td>{data.licenceType}</td>
                                     </tr>
                                 </tbody>
@@ -228,7 +228,7 @@ function BookingDetails() {
                         </div>
                         <div className="bg-base-200 border border-base-content/15 rounded w-full grid grid-cols-1">
                             <div className="p-5">
-                                <CollapseForm title='Kilometer package' titleClass='text-xl' defaultOpen>
+                                <CollapseForm title='Forfait véhicule' titleClass='text-xl' defaultOpen>
                                     <div className="flex flex-col gap-3">
                                         {data.expand.vehiclePackages.map((pac, i) => (
                                             <div className='flex gap-3' key={i}>
@@ -246,20 +246,20 @@ function BookingDetails() {
                                                         <span className='font-semibold'>{pac.title}</span><span className='mx-1'>:</span><span>{pac.maxDistanceKm} km package</span><span className='ml-1 font-bold text-primary bg-black px-2'>CHF {pac.pricePerTimeUnit}/ {pac.timeUnit.toLowerCase()}</span>
                                                     </div>
                                                     <div className="flex text-sm opacity-80">
-                                                        <span>Price per additional km: </span><span className='ml-1'>CHF {pac.pricePerExtraKm}/km</span>
+                                                        <span>Prix ​​par km supplémentaire : </span><span className='ml-1'>CHF {pac.pricePerExtraKm}/km</span>
                                                     </div>
                                                 </div>
                                             </div>
                                         ))}
                                         <div className="text-info text-sm font-semibold">
-                                            👆 Select a package to continue
+                                            👆 Sélectionnez un forfait pour continuer
                                         </div>
                                     </div>
                                 </CollapseForm>
                             </div>
                             <hr className='text-base-content/25' />
                             <div className="p-5">
-                                <CollapseForm title='Additional Options' titleClass='text-xl' defaultOpen>
+                                <CollapseForm title='Options' titleClass='text-xl' defaultOpen>
                                     <div className="flex flex-col gap-3">
                                         {data.expand.vehicleOptions.map((option, i) => (
                                             <div className='flex gap-3' key={i}>
@@ -289,7 +289,7 @@ function BookingDetails() {
                             </div>
                             <hr className='text-base-content/25' />
                             <div className="p-5">
-                                <CollapseForm title='What is included' titleClass='text-xl'>
+                                <CollapseForm title='Ce qui est inclus' titleClass='text-xl'>
                                     <div className="flex flex-col gap-3">
                                         {data.expand.featuresIncluded.map((e, i) => (
                                             <div className="flex gap-3 items-center" key={i}>
@@ -302,7 +302,7 @@ function BookingDetails() {
                             </div>
                             <hr className='text-base-content/25' />
                             <div className="p-5">
-                                <CollapseForm title='What is not included' titleClass='text-xl'>
+                                <CollapseForm title='Ce qui nest pas inclus' titleClass='text-xl'>
                                     <div className="flex flex-col gap-3">
                                         {data.expand.featuresExcluded.map((e, i) => (
                                             <div className="flex gap-3 items-center" key={i}>
@@ -315,7 +315,7 @@ function BookingDetails() {
                             </div>
                             <hr className='text-base-content/25' />
                             <div className="p-5">
-                                <CollapseForm title='Pickup & Return' titleClass='text-xl' defaultOpen>
+                                <CollapseForm title='Ramassage et retour' titleClass='text-xl' defaultOpen>
                                     <div className="flex flex-col gap-5">
                                         <fieldset className="fieldset">
                                             <legend className="fieldset-legend">Choose Agency</legend>
@@ -335,7 +335,7 @@ function BookingDetails() {
                                         </fieldset>
                                         <div className="grid grid-cols-2 gap-5">
                                             <fieldset className="fieldset">
-                                                <legend className="fieldset-legend">Start Date</legend>
+                                                <legend className="fieldset-legend">Date de début</legend>
                                                 <input
                                                     type="date"
                                                     value={formData.startDate}
@@ -348,7 +348,7 @@ function BookingDetails() {
                                                 />
                                             </fieldset>
                                             <fieldset className="fieldset">
-                                                <legend className="fieldset-legend">Start Time</legend>
+                                                <legend className="fieldset-legend">Heure de début</legend>
                                                 <select
                                                     value={formData.startTime}
                                                     onChange={e => {
@@ -365,7 +365,7 @@ function BookingDetails() {
                                         </div>
                                         <div className="grid grid-cols-2 gap-5">
                                             <fieldset className="fieldset">
-                                                <legend className="fieldset-legend">End Date</legend>
+                                                <legend className="fieldset-legend">Date de fin</legend>
                                                 <input
                                                     type="date"
                                                     value={formData.endDate}
@@ -378,7 +378,7 @@ function BookingDetails() {
                                                 />
                                             </fieldset>
                                             <fieldset className="fieldset">
-                                                <legend className="fieldset-legend">End Time</legend>
+                                                <legend className="fieldset-legend">Fin des temps</legend>
                                                 <select
                                                     value={formData.endTime}
                                                     onChange={e => {
@@ -394,7 +394,7 @@ function BookingDetails() {
                                             </fieldset>
                                         </div>
                                         <div className="text-info text-sm font-semibold">
-                                            👆 Please fill this form to continue
+                                            👆 Veuillez remplir ce formulaire pour continuer
                                         </div>
                                     </div>
                                 </CollapseForm>
@@ -403,7 +403,7 @@ function BookingDetails() {
                             <div className="flex justify-between p-5 bg-base-content text-base-100">
                                 <div className="flex gap-3 items-center justify-end">
                                     <div className="text-xl font-semibold uppercase opacity-70">
-                                        Amount To Pay
+                                        Montant à payer
                                     </div>
                                     <div className="text-xl font-bold">CHF {enableRentNow ? formatPrice(
                                         selectedVehiclePackage ? calculateVhiclePackagePrice(selectedVehiclePackage.timeUnit, selectedVehiclePackage.pricePerTimeUnit) : 0 +
@@ -416,8 +416,8 @@ function BookingDetails() {
                                     ) : 0}</div>
                                 </div>
                                 <div className="flex gap-5 justify-end">
-                                    <button className="btn" onClick={() => navigate(-1)}>Cancel</button>
-                                    <button className="btn btn-primary" onClick={() => setIsOpened(true)} disabled={!enableRentNow}>Rent Now</button>
+                                    <button className="btn" onClick={() => navigate(-1)}>Annuler</button>
+                                    <button className="btn btn-primary" onClick={() => setIsOpened(true)} disabled={!enableRentNow}>Nos Véhicules</button>
                                 </div>
                             </div>
                         </div>
@@ -427,7 +427,7 @@ function BookingDetails() {
             <Dialog open={isOpened} onClose={() => setIsOpened(false)} className="relative z-50">
                 <div className="fixed inset-0 flex w-screen items-center justify-center p-4 bg-base-300/50">
                     <DialogPanel className="max-w-xl space-y-4 border border-base-300 bg-base-100 shadow p-10">
-                        <DialogTitle className="font-bold poppins-bold">Review Selected Options</DialogTitle>
+                        <DialogTitle className="font-bold poppins-bold">Examiner les options sélectionnées</DialogTitle>
                         <table className="table border border-slate-300 mt-5">
                             <tbody>
                                 <tr>
@@ -435,44 +435,44 @@ function BookingDetails() {
                                     <td>{data.expand.agencies.find(e => e.id == formData.agencyId)?.name || "N/A"}</td>
                                 </tr>
                                 <tr>
-                                    <th>Start At</th>
+                                    <th>Commencer à</th>
                                     <td>{formData.startDate} {formData.startTime}</td>
                                 </tr>
                                 <tr>
-                                    <th>End At</th>
+                                    <th>Fin à</th>
                                     <td>{formData.endDate} {formData.endTime}</td>
                                 </tr>
                                 <tr>
-                                    <th>No of Days</th>
+                                    <th>Nombre de jours</th>
                                     <td>{countDifferenceBetweenDateTime({
                                         startDate: formData.startDate,
                                         startTime: formData.startTime,
                                         endDate: formData.endDate,
                                         endTime: formData.endTime
-                                    }).days} Days</td>
+                                    }).days} Jours</td>
                                 </tr>
                                 <tr>
-                                    <th>No of Hours</th>
+                                    <th>Nombre d'heures</th>
                                     <td>{countDifferenceBetweenDateTime({
                                         startDate: formData.startDate,
                                         startTime: formData.startTime,
                                         endDate: formData.endDate,
                                         endTime: formData.endTime
-                                    }).hours} Hours</td>
+                                    }).hours} Heures</td>
                                 </tr>
                             </tbody>
                         </table>
                         <table className="table border border-slate-300 mt-5">
                             <tbody>
                                 <tr>
-                                    <th>Type</th>
-                                    <th>Unit Price</th>
-                                    <th>Unit Time</th>
-                                    <th>Total Price</th>
+                                    <th>Taper</th>
+                                    <th>Prix ​​unitaire</th>
+                                    <th>Unité de temps</th>
+                                    <th>Prix ​​total</th>
                                 </tr>
                                 {selectedVehiclePackage && (
                                     <tr>
-                                        <td>Vehicle Package: {selectedVehiclePackage.title}</td>
+                                        <td>Forfait véhicule: {selectedVehiclePackage.title}</td>
                                         <td>CHF {selectedVehiclePackage.pricePerTimeUnit}</td>
                                         <td>{selectedVehiclePackage.timeUnit}</td>
                                         <td>CHF {calculateVhiclePackagePrice(selectedVehiclePackage.timeUnit, selectedVehiclePackage.pricePerTimeUnit)}</td>
@@ -480,7 +480,7 @@ function BookingDetails() {
                                 )}
                                 {selectedOptions.map((e, i) => (
                                     <tr key={i}>
-                                        <td>Additional: {e.title}</td>
+                                        <td>Supplémentaire: {e.title}</td>
                                         <td>CHF {e.price}</td>
                                         <td>DAY</td>
                                         <td>CHF {e.price * countDifferenceBetweenDateTime({
@@ -492,7 +492,7 @@ function BookingDetails() {
                                     </tr>
                                 ))}
                                 <tr>
-                                    <th>Total Price</th>
+                                    <th>Prix ​​total</th>
                                     <th></th>
                                     <th></th>
                                     <th>CHF {formatPrice(
@@ -511,7 +511,7 @@ function BookingDetails() {
                             to={"/bookings/" + id + "/reservation" + location.search}
                             className="btn w-full btn-primary mt-5"
                         >
-                            Proceed
+                            Procéder
                         </Link>
                     </DialogPanel>
                 </div>

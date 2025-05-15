@@ -122,7 +122,7 @@ function BookingSearch() {
                 <div className="text-5xl font-bold text-center mb-16 poppins-bold">Louer une voiture en France</div>
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
                     <div className='bg-base-200 rounded flex flex-col lg:sticky top-0 h-fit border border-base-content/15 shadow'>
-                        <CollapseForm title='Vehicle Types'>
+                        <CollapseForm title='Types de véhicules'>
                             <div className="flex flex-col gap-2">
                                 {vehicleTypes.map(el => (
                                     <label className="fieldset-label" key={el.id}>
@@ -137,7 +137,7 @@ function BookingSearch() {
                                 ))}
                             </div>
                         </CollapseForm>
-                        <CollapseForm title='Agency (departure and return)'>
+                        <CollapseForm title='Agence (départ et retour)'>
                             <div className="flex flex-col gap-2">
                                 {agencies.map(el => (
                                     <label className="fieldset-label" key={el.id}>
@@ -152,7 +152,7 @@ function BookingSearch() {
                                 ))}
                             </div>
                         </CollapseForm>
-                        <CollapseForm title='Departure' defaultOpen>
+                        <CollapseForm title='Départ' defaultOpen>
                             <div className="flex flex-col gap-5">
                                 <input
                                     type="date"
@@ -175,7 +175,7 @@ function BookingSearch() {
                                 </select>
                             </div>
                         </CollapseForm>
-                        <CollapseForm title='Return' defaultOpen>
+                        <CollapseForm title='Retour' defaultOpen>
                             <div className="flex flex-col gap-5">
                                 <input
                                     type="date"
@@ -295,7 +295,7 @@ function BookingSearch() {
                         </div>
                         {vehicles.length == 0 && loaded && (
                             <div className='w-full h-20 flex justify-center items-center rounded border border-base-content/15 bg-base-200'>
-                                ¯\_(ツ)_/¯ No cars found ¯\_(ツ)_/¯
+                                ¯\_(ツ)_/¯ Aucune voiture trouvée ¯\_(ツ)_/¯
                             </div>
                         )}
                     </div>

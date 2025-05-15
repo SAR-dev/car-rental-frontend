@@ -36,8 +36,8 @@ function Cart() {
     return (
         <NavLayout>
             <div className='py-16 px-10 max-w-6xl mx-auto'>
-                <div className="text-3xl font-semibold poppins-bold">Your Cart</div>
-                <div className='text-center'>{productList.length} products in cart</div>
+                <div className="text-3xl font-semibold poppins-bold">Votre panier</div>
+                <div className='text-center'>{productList.length} produits dans le panier</div>
                 <div className="grid grid-cols-1 gap-5 my-10">
                     {products.map((data) => {
                         const count = productCount[data.id] || 0;
@@ -49,7 +49,7 @@ function Cart() {
                                         className='h-64 w-full object-cover rounded'
                                         src={`${import.meta.env.VITE_API_URL}${data.image}`}
                                         loader={<div className="h-64 w-full rounded bg-base-100" />}
-                                        unloader={<div className="h-64 w-full rounded bg-base-100 flex justify-center items-center font-semibold text-base-content/50">Not Found</div>}
+                                        unloader={<div className="h-64 w-full rounded bg-base-100 flex justify-center items-center font-semibold text-base-content/50">Non trouvé</div>}
                                     />
                                 </div>
                                 <div className='flex flex-col justify-between'>
@@ -57,7 +57,7 @@ function Cart() {
                                         <Link to={`/products/${data.id}`} className="font-semibold text-xl hover:text-info">{data.title}</Link>
                                         <div className="mt-3 line-clamp-5">{data.summary}</div>
                                     </div>
-                                    <button className="btn btn-primary mt-5" onClick={() => handleRemoveProduct(data.id)}>Remove from Cart</button>
+                                    <button className="btn btn-primary mt-5" onClick={() => handleRemoveProduct(data.id)}>Supprimer du panier</button>
                                 </div>
                             </div>
                         ));

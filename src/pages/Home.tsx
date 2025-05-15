@@ -38,13 +38,13 @@ function Home() {
             <div className="flex w-full my-16 justify-center">
                 <div className="px-10 py-10 rounded-t bg-primary w-[25rem]">
                     <div className="flex flex-col gap-5">
-                        <div className="text-2xl text-center font-semibold poppins-bold">Louez une voiture maintenant</div>
+                        <div className="text-xl text-center font-semibold poppins-bold">Louez votre véhicules au meilleur tarif en Suisse</div>
                         <select
                             value={formData.vehicleTypeId}
                             onChange={e => setFormData({ ...formData, vehicleTypeId: e.target.value })}
                             className="select"
                         >
-                            <option value="" disabled={true}>Vehicle Type</option>
+                            <option value="" disabled={true}>Type de véhicule</option>
                             {vehicleTypes.map(e => (
                                 <option key={e.id} value={e.id}>{e.title}</option>
                             ))}
@@ -54,7 +54,7 @@ function Home() {
                             onChange={e => setFormData({ ...formData, agencyId: e.target.value })}
                             className="select"
                         >
-                            <option value="" disabled={true}>Agency</option>
+                            <option value="" disabled={true}>Agence</option>
                             {agencies.map(e => (
                                 <option key={e.id} value={e.id}>{e.name}</option>
                             ))}
@@ -99,7 +99,7 @@ function Home() {
                                 ))}
                             </select>
                         </div>
-                        <button className="btn" onClick={handleSearch}>Search</button>
+                        <button className="btn" onClick={handleSearch}>Recherche</button>
                     </div>
                 </div>
             </div>
