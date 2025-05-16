@@ -21,7 +21,7 @@ export const constants = {
     },
     CART_STORE_KEY: "cart",
     TIME_RANGE: {
-        MIN: "09:00",
+        MIN: "08:30",
         MAX: "21:00"
     }
 }
