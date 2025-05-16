@@ -119,7 +119,7 @@ function BookingSearch() {
     return (
         <NavLayout>
             <div className="container py-16 px-5 mx-auto">
-                <div className="text-5xl font-bold text-center mb-16 poppins-bold">Louer une voiture en France</div>
+                <div className="text-5xl font-bold text-center mb-16 poppins-bold">Louez votre véhicules au meilleur tarif en Suisse</div>
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
                     <div className='bg-base-200 rounded flex flex-col lg:sticky top-0 h-fit border border-base-content/15 shadow'>
                         <CollapseForm title='Types de véhicules'>
@@ -290,7 +290,7 @@ function BookingSearch() {
                         </CollapseForm>
                     </div>
                     <div className="lg:col-span-3">
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 w-full">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-10 w-full">
                             {vehicles.map((data, i) => <VehicleCard data={data} key={i} />)}
                         </div>
                         {vehicles.length == 0 && loaded && (
