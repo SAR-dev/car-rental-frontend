@@ -30,7 +30,7 @@ function SignIn() {
     })
 
     useEffect(() => {
-      if(!!user) navigate(searchParams.get(constants.SEARCH_PARAMS.NEXT) || "")
+      if(!!user) navigate(searchParams.get(constants.SEARCH_PARAMS.NEXT) || "/")
     }, [])
     
 
@@ -66,7 +66,7 @@ function SignIn() {
         logIn({email: formData.email, password: formData.password})
             .then(() => {
                 toast.success("Signed in successfully")
-                navigate(searchParams.get(constants.SEARCH_PARAMS.NEXT) || "")
+                navigate(searchParams.get(constants.SEARCH_PARAMS.NEXT) || "/")
             })
             .catch(() => toast.error("Sign in failed. Please try again."))
             .finally(() => setIsLoading(false))
