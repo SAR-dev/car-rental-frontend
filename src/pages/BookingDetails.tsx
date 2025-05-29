@@ -22,6 +22,7 @@ import { TexpandVehicleDetailsResType } from '../types/result';
 import { Img } from 'react-image';
 import { constants } from '../constants';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
+import classNames from 'classnames';
 
 interface FormData {
     agencyId: string
@@ -69,8 +70,38 @@ function BookingDetails() {
         [formData]
     );
 
+    const enablePackage = useMemo(
+        () => formData.agencyId.trim().length > 0
+            && !isNaN(Date.parse(formData.startDate))
+            && constants.TIME_FORMAT.test(formData.startTime)
+            && !isNaN(Date.parse(formData.endDate))
+            && constants.TIME_FORMAT.test(formData.endTime),
+        [formData]
+    );
+
+    const selectedNoOfDays = useMemo(() => countDifferenceBetweenDateTime({
+        startDate: formData.startDate,
+        startTime: formData.startTime,
+        endDate: formData.endDate,
+        endTime: formData.endTime
+    }).days, [formData])
+
     const selectedVehiclePackage = useMemo(() => data?.expand.vehiclePackages.find(e => e.id == formData.vehiclePackageId), [formData, data]);
     const selectedOptions = useMemo(() => data?.expand.vehicleOptions.filter(e => formData.vehicleOptionIds.includes(e.id)) ?? [], [formData, data]);
+
+    useEffect(() => {
+      if(selectedNoOfDays <= 1 && selectedVehiclePackage?.timeUnit == 'DAY'){
+        searchParams.set(constants.SEARCH_PARAMS.VEHICLE_PACKAGE_ID, "")
+        setSearchParams(searchParams)
+        return;
+      }
+      if(selectedNoOfDays > 1 && selectedVehiclePackage?.timeUnit == 'HOUR'){
+        searchParams.set(constants.SEARCH_PARAMS.VEHICLE_PACKAGE_ID, "")
+        setSearchParams(searchParams)
+        return;
+      }
+    }, [selectedNoOfDays, selectedVehiclePackage])
+    
 
     useEffect(() => {
         if (!id || id.length == 0) return;
@@ -228,93 +259,6 @@ function BookingDetails() {
                         </div>
                         <div className="bg-base-200 border border-base-content/15 rounded w-full grid grid-cols-1">
                             <div className="p-5">
-                                <CollapseForm title='Forfait véhicule' titleClass='text-xl' defaultOpen>
-                                    <div className="flex flex-col gap-3">
-                                        {data.expand.vehiclePackages.map((pac, i) => (
-                                            <div className='flex gap-3' key={i}>
-                                                <input
-                                                    type="radio"
-                                                    className="radio"
-                                                    checked={pac.id == formData.vehiclePackageId}
-                                                    onChange={() => {
-                                                        searchParams.set(constants.SEARCH_PARAMS.VEHICLE_PACKAGE_ID, pac.id)
-                                                        setSearchParams(searchParams)
-                                                    }}
-                                                />
-                                                <div className="flex flex-col gap-1">
-                                                    <div className="flex">
-                                                        <span className='font-semibold'>{pac.title}</span><span className='mx-1'>:</span><span>{pac.maxDistanceKm} km package</span><span className='ml-1 font-bold text-primary bg-black px-2'>CHF {pac.pricePerTimeUnit}/ {pac.timeUnit.toLowerCase()}</span>
-                                                    </div>
-                                                    <div className="flex text-sm opacity-80">
-                                                        <span>Prix ​​par km supplémentaire : </span><span className='ml-1'>CHF {pac.pricePerExtraKm}/km</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                        <div className="text-info text-sm font-semibold">
-                                            👆 Sélectionnez un forfait pour continuer
-                                        </div>
-                                    </div>
-                                </CollapseForm>
-                            </div>
-                            <hr className='text-base-content/25' />
-                            <div className="p-5">
-                                <CollapseForm title='Options' titleClass='text-xl' defaultOpen>
-                                    <div className="flex flex-col gap-3">
-                                        {data.expand.vehicleOptions.map((option, i) => (
-                                            <div className='flex gap-3' key={i}>
-                                                <input
-                                                    type="radio"
-                                                    className="radio"
-                                                    checked={formData.vehicleOptionIds.includes(option.id)}
-                                                    onClick={() => handleVehicleOption(option.id)}
-                                                />
-                                                <div className="flex flex-col gap-1">
-                                                    <div className="flex justify-between">
-                                                        <div>
-                                                            {option.title}
-                                                        </div>
-                                                        <div className='font-bold text-primary bg-black px-2'>
-                                                            CHF {option.price}/ day
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex text-sm opacity-80">
-                                                        {option.subtitle}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </CollapseForm>
-                            </div>
-                            <hr className='text-base-content/25' />
-                            <div className="p-5">
-                                <CollapseForm title='Ce qui est inclus' titleClass='text-xl'>
-                                    <div className="flex flex-col gap-3">
-                                        {data.expand.featuresIncluded.map((e, i) => (
-                                            <div className="flex gap-3 items-center" key={i}>
-                                                <FaCheckCircle className='size-5 text-success' />
-                                                <div>{e.title}</div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </CollapseForm>
-                            </div>
-                            <hr className='text-base-content/25' />
-                            <div className="p-5">
-                                <CollapseForm title='Ce qui nest pas inclus' titleClass='text-xl'>
-                                    <div className="flex flex-col gap-3">
-                                        {data.expand.featuresExcluded.map((e, i) => (
-                                            <div className="flex gap-3 items-center" key={i}>
-                                                <MdError className='size-5 text-error' />
-                                                <div>{e.title}</div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </CollapseForm>
-                            </div>
-                            <hr className='text-base-content/25' />
-                            <div className="p-5">
                                 <CollapseForm title='Ramassage et retour' titleClass='text-xl' defaultOpen>
                                     <div className="flex flex-col gap-5">
                                         <fieldset className="fieldset">
@@ -393,9 +337,103 @@ function BookingDetails() {
                                                 </select>
                                             </fieldset>
                                         </div>
-                                        <div className="text-info text-sm font-semibold">
+                                        <div className={classNames("text-sm font-semibold", {
+                                            "text-info": !!enablePackage,
+                                            "text-error": !enablePackage
+                                        })}>
                                             👆 Veuillez remplir ce formulaire pour continuer
                                         </div>
+                                    </div>
+                                </CollapseForm>
+                            </div>
+                            <hr className='text-base-content/25' />
+                            <div className="p-5">
+                                <CollapseForm title='Forfait véhicule' titleClass='text-xl' defaultOpen>
+                                    <div className="flex flex-col gap-3">
+                                        {data.expand.vehiclePackages.map((pac, i) => (
+                                            <div className='flex gap-3' key={i}>
+                                                <input
+                                                    type="radio"
+                                                    className="radio"
+                                                    checked={pac.id == formData.vehiclePackageId}
+                                                    disabled={!enablePackage || pac.timeUnit == 'HOUR' && selectedNoOfDays > 1 || pac.timeUnit == 'DAY' && selectedNoOfDays <= 1}
+                                                    onChange={() => {
+                                                        searchParams.set(constants.SEARCH_PARAMS.VEHICLE_PACKAGE_ID, pac.id)
+                                                        setSearchParams(searchParams)
+                                                    }}
+                                                />
+                                                <div className="flex flex-col gap-1">
+                                                    <div className="flex">
+                                                        <span className='font-semibold'>{pac.title}</span><span className='mx-1'>:</span><span>{pac.maxDistanceKm} km package</span><span className='ml-1 font-bold text-primary bg-black px-2'>CHF {pac.pricePerTimeUnit}/ {pac.timeUnit.toLowerCase()}</span>
+                                                    </div>
+                                                    <div className="flex text-sm opacity-80">
+                                                        <span>Prix ​​par km supplémentaire : </span><span className='ml-1'>CHF {pac.pricePerExtraKm}/km</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                        <div className={classNames("text-sm font-semibold", {
+                                            "text-info": !!selectedVehiclePackage,
+                                            "text-error": !selectedVehiclePackage
+                                        })}>
+                                            👆 Sélectionnez un forfait pour continuer
+                                        </div>
+                                    </div>
+                                </CollapseForm>
+                            </div>
+                            <hr className='text-base-content/25' />
+                            <div className="p-5">
+                                <CollapseForm title='Options' titleClass='text-xl' defaultOpen>
+                                    <div className="flex flex-col gap-3">
+                                        {data.expand.vehicleOptions.map((option, i) => (
+                                            <div className='flex gap-3' key={i}>
+                                                <input
+                                                    type="radio"
+                                                    className="radio"
+                                                    checked={formData.vehicleOptionIds.includes(option.id)}
+                                                    onClick={() => handleVehicleOption(option.id)}
+                                                />
+                                                <div className="flex flex-col gap-1">
+                                                    <div className="flex justify-between">
+                                                        <div>
+                                                            {option.title}
+                                                        </div>
+                                                        <div className='font-bold text-primary bg-black px-2'>
+                                                            CHF {option.price}/ day
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex text-sm opacity-80">
+                                                        {option.subtitle}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </CollapseForm>
+                            </div>
+                            <hr className='text-base-content/25' />
+                            <div className="p-5">
+                                <CollapseForm title='Ce qui est inclus' titleClass='text-xl'>
+                                    <div className="flex flex-col gap-3">
+                                        {data.expand.featuresIncluded.map((e, i) => (
+                                            <div className="flex gap-3 items-center" key={i}>
+                                                <FaCheckCircle className='size-5 text-success' />
+                                                <div>{e.title}</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </CollapseForm>
+                            </div>
+                            <hr className='text-base-content/25' />
+                            <div className="p-5">
+                                <CollapseForm title='Ce qui nest pas inclus' titleClass='text-xl'>
+                                    <div className="flex flex-col gap-3">
+                                        {data.expand.featuresExcluded.map((e, i) => (
+                                            <div className="flex gap-3 items-center" key={i}>
+                                                <MdError className='size-5 text-error' />
+                                                <div>{e.title}</div>
+                                            </div>
+                                        ))}
                                     </div>
                                 </CollapseForm>
                             </div>
