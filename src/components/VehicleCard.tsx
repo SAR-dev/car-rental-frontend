@@ -20,14 +20,14 @@ function VehicleCard({ data }: { data: VehicleList }) {
                     {data.model}
                 </div>
                 <div className="flex gap-1 items-end text-primary-content">
-                    From <span className='text-4xl font-semibold'>CHF {data.minPrice}</span>
+                    Dès <span className='text-4xl font-semibold'>CHF {data.minPrice}</span>
                 </div>
-                <div className="h-64">
+                <div className="aspect-1 w-full">
                     <Img 
-                        className='h-64 w-full object-cover rounded' 
+                        className='aspect-1 w-full object-cover rounded' 
                         src={`${import.meta.env.VITE_API_URL}${data.image}`}
-                        loader={<div className="h-64 w-full rounded bg-base-100" />}
-                        unloader={<div className="h-64 w-full rounded bg-base-100 flex justify-center items-center font-semibold text-base-content/50">Not Found</div>}
+                        loader={<div className="aspect-1 w-full rounded bg-base-100" />}
+                        unloader={<div className="aspect-1 w-full rounded bg-base-100 flex justify-center items-center font-semibold text-base-content/50">Not Found</div>}
                     />
                 </div>
                 <div className="flex justify-between">

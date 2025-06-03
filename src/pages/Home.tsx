@@ -15,9 +15,9 @@ function Home() {
         vehicleTypeId: "",
         agencyId: "",
         startDate: formatDateToYYYYMMDD(new Date(new Date().setDate(new Date().getDate() + 1))),
-        startTime: "09:00",
+        startTime: "08:30",
         endDate: formatDateToYYYYMMDD(new Date(new Date().setDate(new Date().getDate() + 2))),
-        endTime: "09:00",
+        endTime: "17:00",
     })
 
     const [vehicleTypes, setVehicleTypes] = useLocalStorage<VehicleTypesRecord[]>(constants.VEHICLE_TYPES_STORE_KEY, [])

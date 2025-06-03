@@ -279,7 +279,7 @@ function BookingDetails() {
                                         </fieldset>
                                         <div className="grid grid-cols-2 gap-5">
                                             <fieldset className="fieldset">
-                                                <legend className="fieldset-legend">Date de début</legend>
+                                                <legend className="fieldset-legend">Jour de début</legend>
                                                 <input
                                                     type="date"
                                                     value={formData.startDate}
@@ -309,7 +309,7 @@ function BookingDetails() {
                                         </div>
                                         <div className="grid grid-cols-2 gap-5">
                                             <fieldset className="fieldset">
-                                                <legend className="fieldset-legend">Date de fin</legend>
+                                                <legend className="fieldset-legend">Jour de fin</legend>
                                                 <input
                                                     type="date"
                                                     value={formData.endDate}
@@ -322,7 +322,7 @@ function BookingDetails() {
                                                 />
                                             </fieldset>
                                             <fieldset className="fieldset">
-                                                <legend className="fieldset-legend">Fin des temps</legend>
+                                                <legend className="fieldset-legend">Heure de fin</legend>
                                                 <select
                                                     value={formData.endTime}
                                                     onChange={e => {
@@ -364,7 +364,7 @@ function BookingDetails() {
                                                 />
                                                 <div className="flex flex-col gap-1">
                                                     <div className="flex">
-                                                        <span className='font-semibold'>{pac.title}</span><span className='mx-1'>:</span><span>{pac.maxDistanceKm} km package</span><span className='ml-1 font-bold text-primary bg-black px-2'>CHF {pac.pricePerTimeUnit}/ {pac.timeUnit.toLowerCase()}</span>
+                                                        <span className='font-semibold'>{pac.title}</span><span className='mx-1'>:</span><span>Forfait {pac.maxDistanceKm} kilometer</span><span className='ml-1 font-bold text-primary bg-black px-2'>CHF {pac.pricePerTimeUnit}/ {pac.timeUnit == "DAY" && "jour"}{pac.timeUnit == "HOUR" && "heure"}</span>
                                                     </div>
                                                     <div className="flex text-sm opacity-80">
                                                         <span>Prix ​​par km supplémentaire : </span><span className='ml-1'>CHF {pac.pricePerExtraKm}/km</span>
@@ -455,7 +455,7 @@ function BookingDetails() {
                                 </div>
                                 <div className="flex gap-5 justify-end">
                                     <button className="btn" onClick={() => navigate(-1)}>Annuler</button>
-                                    <button className="btn btn-primary" onClick={() => setIsOpened(true)} disabled={!enableRentNow}>Nos Véhicules</button>
+                                    <button className="btn btn-primary" onClick={() => setIsOpened(true)} disabled={!enableRentNow}>Finaliser</button>
                                 </div>
                             </div>
                         </div>
